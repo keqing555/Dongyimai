@@ -1,0 +1,40 @@
+server:
+  port: 9001
+
+spring:
+  application:
+    name: dym-sellergoods
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.128.128:33306/dongyimaidb?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2B8
+    username: root
+    password: root
+    type: com.alibaba.druid.pool.DruidDataSource
+    minIdle: 5      #最小连接池数
+    maxActive: 20   #最大连接池报错
+    maxWait: 6000   #获取连接最长等待时间
+
+eureka:
+  client:
+    service-url:
+      defautlZone: http://localhost:8761/eureka
+  instance:
+    lease-renewal-interval-in-seconds: 5    #每隔5秒发一次心跳包
+    lease-expiration-duration-in-seconds: 10 #10秒不发送就过期
+    prefer-ip-address: true   #以IP地址注册到服务中心
+    ip-address: 127.0.0.1
+    instance-id: ${spring.application.name}:${server.port}
+
+feign:
+  hystrix:
+    enabled: true   #开启熔断器
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true    #开启驼峰命名法
+  type-aliases-package: com.psi.sellergoods.pojo  #设置别名（不区分大小写）
+
+logging:
+  level:
+    com:
+      psi: debug    #日志打印级别：debug
