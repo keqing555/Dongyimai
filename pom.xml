@@ -9,6 +9,7 @@
         <module>dongyimai_common_db</module>
         <module>dongyimai_service_api</module>
         <module>dongyimai_service</module>
+        <module>dongyimai_file_service</module>
     </modules>
 
     <parent>

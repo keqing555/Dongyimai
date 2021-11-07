@@ -1,0 +1,22 @@
+server:
+  port: 9002
+
+spring:
+  application:
+    name: dym_file
+  servlet:
+    #文件上传大小限制
+    multipart:
+      max-file-size: 1GB
+      max-request-size: 1GB
+
+#注册中心配置
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka
+  instance:
+    prefer-ip-address: true
+
+#fastDFS文件系统的tracker地址
+FILE_SERVER_URL: http://192.168.128.128:8080
