@@ -1,5 +1,6 @@
 package com.psi.sellergoods.controller;
 
+import com.psi.entity.PageResult;
 import com.psi.entity.Result;
 import com.psi.entity.StatusCode;
 import com.psi.sellergoods.pojo.Brand;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/brand")
+@RequestMapping(value = "/brand")
 //@CrossOrigin
 public class BrandController {
     @Autowired
@@ -44,7 +45,7 @@ public class BrandController {
     }
 
     /**
-     * 添加商品
+     * 添加品牌
      *
      * @param brand
      * @return
@@ -58,5 +59,88 @@ public class BrandController {
             e.printStackTrace();
             return new Result(false, StatusCode.ERROR, "添加失败！" + e.getMessage());
         }
+    }
+
+    /**
+     * 根据id修改品牌
+     *
+     * @param brand
+     * @param id
+     * @return
+     */
+    @PutMapping("/{id}")
+    public Result updateBrand(@RequestBody Brand brand,
+                              @PathVariable("id") Long id) {
+        try {
+            //设置id
+            brand.setId(id);
+            //修改
+            brandService.updateBrand(brand);
+            return new Result(true, StatusCode.OK, "修改成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, StatusCode.ERROR, "修改失败：" + e.getMessage());
+        }
+    }
+
+    /**
+     * 根据id删除品牌
+     *
+     * @param id
+     * @return
+     */
+    @DeleteMapping("/{id}")
+    public Result deleteBrand(@PathVariable("id") Long id) {
+        try {
+            brandService.deleteBrand(id);
+            return new Result(true, StatusCode.OK, "删除成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, StatusCode.ERROR, "删除失败：" + e.getMessage());
+        }
+    }
+
+    /**
+     * 多条件查询品牌
+     *
+     * @param brand
+     * @return
+     */
+    @PostMapping("/search")
+    public Result getBrandByConditions(@RequestBody(required = false) Brand brand) {
+        List<Brand> list = brandService.getBrandsByConditions(brand);
+        if (list == null && list.size() <= 0)
+            return new Result(false, StatusCode.ERROR, "未查询到商品");
+        return new Result(true, StatusCode.OK, "查询成功", list);
+    }
+
+    /**
+     * 品牌分页
+     * 须创建分页插件配置类 MyBatisPlusInterceptor
+     *
+     * @param index 当前页
+     * @param size  每页条数
+     * @return
+     */
+    @GetMapping("page/{index}/{size}")
+    public Result<PageResult<Brand>> getBrandPage(@PathVariable("index") int index,
+                                                  @PathVariable("size") int size) {
+        PageResult<Brand> brandPage = brandService.getBrandPage(index, size);
+        return new Result<>(true, StatusCode.OK, "品牌分页", brandPage);
+    }
+
+    /**
+     * 多条件分页查询
+     *
+     * @param brand
+     * @param index
+     * @param size
+     * @return
+     */
+    @PostMapping("page/{index}/{size}")
+    public PageResult<Brand> getBrandPage(@RequestBody Brand brand,
+                                          @PathVariable("index") int index,
+                                          @PathVariable("size") int size) {
+        return brandService.getBrandPage(brand, index, size);
     }
 }
