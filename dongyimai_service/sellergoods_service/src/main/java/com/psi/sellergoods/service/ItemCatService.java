@@ -65,4 +65,11 @@ public interface ItemCatService extends IService<ItemCat> {
      * @return
      */
     List<ItemCat> findAll();
+
+    /**
+     * 根据父级id查分类列表
+     * @param parentId
+     * @return
+     */
+    List<ItemCat> findByParentId(Long parentId);
 }

@@ -1,8 +1,13 @@
 package com.psi.sellergoods.service;
+
+import com.psi.sellergoods.pojo.SpecificationOption;
 import com.psi.sellergoods.pojo.TypeTemplate;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.psi.entity.PageResult;
+
 import java.util.List;
+import java.util.Map;
+
 /****
  * @Author:ujiuye
  * @Description:TypeTemplate业务层接口
@@ -55,14 +60,23 @@ public interface TypeTemplateService extends IService<TypeTemplate> {
 
     /**
      * 根据ID查询TypeTemplate
+     *
      * @param id
      * @return
      */
-     TypeTemplate findById(Long id);
+    TypeTemplate findById(Long id);
 
     /***
      * 查询所有TypeTemplate
      * @return
      */
     List<TypeTemplate> findAll();
+
+    /**
+     * 根据模板id查询规格选项
+     *
+     * @param typeId
+     * @return
+     */
+    List<Map> findSpecList(Long typeId);
 }

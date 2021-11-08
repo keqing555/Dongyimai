@@ -1,8 +1,13 @@
 package com.psi.sellergoods.service;
+
+import com.psi.sellergoods.group.SpecEntity;
 import com.psi.sellergoods.pojo.Specification;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.psi.entity.PageResult;
+
 import java.util.List;
+import java.util.Map;
+
 /****
  * @Author:ujiuye
  * @Description:Specification业务层接口
@@ -43,9 +48,10 @@ public interface SpecificationService extends IService<Specification> {
 
     /***
      * 修改Specification数据
-     * @param specification
+     * @param specEntity
      */
-    void update(Specification specification);
+    //  void update(Specification specification);
+    void update(SpecEntity specEntity);
 
     /***
      * 新增Specification
@@ -55,14 +61,29 @@ public interface SpecificationService extends IService<Specification> {
 
     /**
      * 根据ID查询Specification
+     *
      * @param id
      * @return
      */
-     Specification findById(Long id);
+    //Specification findById(Long id);
+
+    SpecEntity findById(Long id);
 
     /***
      * 查询所有Specification
      * @return
      */
     List<Specification> findAll();
+
+    /***
+     * 新增规格
+     * @param specEntity
+     */
+    void add(SpecEntity specEntity);
+
+    /**
+     * 查询规格下拉列表
+     * @return
+     */
+    List<Map> selectOptions();
 }

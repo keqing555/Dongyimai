@@ -1,4 +1,5 @@
 package com.psi.sellergoods.service;
+
 import com.psi.sellergoods.pojo.Brand;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.psi.entity.PageResult;
@@ -6,6 +7,8 @@ import com.psi.entity.PageResult;
 import com.psi.sellergoods.pojo.Brand;
 
 import java.util.List;
+import java.util.Map;
+
 /****
  * @Author:ujiuye
  * @Description:Brand业务层接口
@@ -58,14 +61,22 @@ public interface BrandService extends IService<Brand> {
 
     /**
      * 根据ID查询Brand
+     *
      * @param id
      * @return
      */
-     Brand findById(Long id);
+    Brand findById(Long id);
 
     /***
      * 查询所有Brand
      * @return
      */
     List<Brand> findAll();
+
+    /**
+     * 查询品牌下拉列表
+     *
+     * @return
+     */
+    List<Map> selectOptions();
 }

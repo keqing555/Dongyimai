@@ -1,9 +1,12 @@
 package com.psi.sellergoods.service;
+
+import com.psi.sellergoods.group.GoodsEntity;
 import com.psi.sellergoods.pojo.Goods;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.psi.entity.PageResult;
 
 import java.util.List;
+
 /****
  * @Author:ujiuye
  * @Description:Goods业务层接口
@@ -50,16 +53,18 @@ public interface GoodsService extends IService<Goods> {
 
     /***
      * 新增Goods
-     * @param goods
+     * @param goodsEntity
      */
-    void add(Goods goods);
+    // void add(Goods goods);
+    void add(GoodsEntity goodsEntity);
 
     /**
      * 根据ID查询Goods
+     *
      * @param id
      * @return
      */
-     Goods findById(Long id);
+    GoodsEntity findById(Long id);
 
     /***
      * 查询所有Goods
