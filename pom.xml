@@ -10,6 +10,7 @@
         <module>dongyimai_service_api</module>
         <module>dongyimai_service</module>
         <module>dongyimai_file_service</module>
+        <module>code_template</module>
     </modules>
 
     <parent>

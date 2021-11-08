@@ -1,32 +1,71 @@
 package com.psi.sellergoods.service;
-
+import com.psi.sellergoods.pojo.Brand;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.psi.entity.PageResult;
 import com.psi.entity.PageResult;
 import com.psi.sellergoods.pojo.Brand;
 
 import java.util.List;
+/****
+ * @Author:ujiuye
+ * @Description:Brand业务层接口
+ * @Date 2021/2/1 14:19
+ *****/
 
-public interface BrandService {
-    //获取所有品牌
-    List<Brand> getAllBrands();
+public interface BrandService extends IService<Brand> {
 
-    //根据id获取品牌
-    Brand getBrandById(Long id);
+    /***
+     * Brand多条件分页查询
+     * @param brand
+     * @param page
+     * @param size
+     * @return
+     */
+    PageResult<Brand> findPage(Brand brand, int page, int size);
 
-    //增加品牌
-    void addBrand(Brand brand);
+    /***
+     * Brand分页查询
+     * @param page
+     * @param size
+     * @return
+     */
+    PageResult<Brand> findPage(int page, int size);
 
-    //修改品牌信息
-    void updateBrand(Brand brand);
+    /***
+     * Brand多条件搜索方法
+     * @param brand
+     * @return
+     */
+    List<Brand> findList(Brand brand);
 
-    //删除
-    void deleteBrand(Long id);
+    /***
+     * 删除Brand
+     * @param id
+     */
+    void delete(Long id);
 
-    //多条件搜索品牌
-    List<Brand> getBrandsByConditions(Brand brand);
+    /***
+     * 修改Brand数据
+     * @param brand
+     */
+    void update(Brand brand);
 
-    //品牌列表分页查询
-    PageResult<Brand> getBrandPage(int index, int size);
+    /***
+     * 新增Brand
+     * @param brand
+     */
+    void add(Brand brand);
 
-    //多条件分页查询
-    PageResult<Brand> getBrandPage(Brand brand, int index, int page);
+    /**
+     * 根据ID查询Brand
+     * @param id
+     * @return
+     */
+     Brand findById(Long id);
+
+    /***
+     * 查询所有Brand
+     * @return
+     */
+    List<Brand> findAll();
 }
