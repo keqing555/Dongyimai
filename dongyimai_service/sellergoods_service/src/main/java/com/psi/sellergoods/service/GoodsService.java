@@ -58,9 +58,8 @@ public interface GoodsService extends IService<Goods> {
     // void add(Goods goods);
     void add(GoodsEntity goodsEntity);
 
-    /**
+    /***
      * 根据ID查询Goods
-     *
      * @param id
      * @return
      */
@@ -71,4 +70,36 @@ public interface GoodsService extends IService<Goods> {
      * @return
      */
     List<Goods> findAll();
+
+    /***
+     * 商品审核，审核通过自动上架
+     * @param id
+     */
+    void audit(Long id);
+
+    /***
+     * 商品上架
+     * @param id
+     */
+    void push(Long id);
+
+    /***
+     * 商品下架
+     * @param id
+     */
+    void pull(Long id);
+
+    /***
+     * 批量上架
+     * @param ids
+     * @return
+     */
+    int pushMany(Long[] ids);
+
+    /***
+     * 批量下架
+     * @param ids
+     * @return
+     */
+    int pullMany(Long[] ids);
 }

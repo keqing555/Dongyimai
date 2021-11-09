@@ -8,6 +8,7 @@ import com.psi.sellergoods.service.GoodsService;
 import com.psi.entity.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -15,6 +16,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +27,7 @@ import java.util.Map;
  * @Date 2021/2/1 14:19
  *****/
 @Service
+@Transactional  //开启事务
 public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements GoodsService {
 
     @Autowired
@@ -164,13 +167,23 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     }
 
     /**
-     * 删除
+     * 逻辑删除
+     * 必须先下架才能删除
      *
      * @param id
      */
     @Override
     public void delete(Long id) {
-        this.removeById(id);
+        Goods goods = this.getById(id);
+        if (goods == null)
+            throw new RuntimeException("未查询到要删除的商品");
+        if (goods.getIsMarketable().equals("0"))
+            throw new RuntimeException("不能删除未下架的商品！");
+        //逻辑删除
+        goods.setIsDelete("1");
+        //设置未审核
+        goods.setAuditStatus("0");
+        this.update(goods);
     }
 
     /**
@@ -255,6 +268,8 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     public GoodsEntity findById(Long id) {
         //根据ID查询SPU信息
         Goods goods = goodsMapper.selectById(id);
+        if (goods.getIsDelete().equals("1"))
+            throw new RuntimeException("该商品已被删除");
         //根据id查询商品扩展信息
         GoodsDesc goodsDesc = goodsDescMapper.selectById(id);
         //根据id查询SKU
@@ -276,6 +291,76 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
      */
     @Override
     public List<Goods> findAll() {
-        return this.list(new QueryWrapper<Goods>());
+        QueryWrapper<Goods> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("is_delete", "0");
+        return goodsMapper.selectList(queryWrapper);
+    }
+
+    @Override
+    public void audit(Long id) {
+        //审核通过自动上架
+        Goods goods = goodsMapper.selectById(id);
+        if (goods == null)
+            throw new RuntimeException("商品不存在");
+        if (goods.getIsDelete().equals("1"))
+            throw new RuntimeException("该商品已删除");
+        //审核通过
+        goods.setAuditStatus("1");
+        //上架
+        goods.setIsMarketable("1");
+        goodsMapper.updateById(goods);
+    }
+
+    @Override
+    public void push(Long id) {
+        Goods goods = goodsMapper.selectById(id);
+        if (goods == null)
+            throw new RuntimeException("该商品不存在");
+        if (goods.getIsDelete().equals("1"))
+            throw new RuntimeException("该商品已被删除");
+        if (goods.getAuditStatus().equals("0"))
+            throw new RuntimeException("该商品审核未通过");
+        //上架商品
+        goods.setIsMarketable("1");
+        goodsMapper.updateById(goods);
+    }
+
+    @Override
+    public void pull(Long id) {
+        Goods goods = goodsMapper.selectById(id);
+        if (goods == null)
+            throw new RuntimeException("该商品不存在");
+        if (goods.getIsDelete().equals("1"))
+            throw new RuntimeException("该商品已被删除");
+        //下架商品
+        goods.setIsMarketable("0");
+        goodsMapper.updateById(goods);
+    }
+
+    @Override
+    public int pushMany(Long[] ids) {
+        QueryWrapper<Goods> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("id", Arrays.asList(ids));
+        queryWrapper.eq("is_marketable", "0");//下架的商品
+        queryWrapper.eq("audit_status", "1");//审核通过的商品
+        queryWrapper.eq("is_delete", "0");//未被删除的商品
+        //设置上架数据模型
+        Goods goods = new Goods();
+        goods.setIsMarketable("1");
+        int rows = goodsMapper.update(goods, queryWrapper);
+        return rows;
+    }
+
+    @Override
+    public int pullMany(Long[] ids) {
+        QueryWrapper<Goods> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("id", Arrays.asList(ids));
+        queryWrapper.eq("is_marketable", "1");//上架的商品
+        queryWrapper.eq("is_delete", "0");//未被删除的商品
+        //设置下架数据模型
+        Goods goods = new Goods();
+        goods.setIsMarketable("0");
+        int rows = goodsMapper.update(goods, queryWrapper);
+        return rows;
     }
 }

@@ -86,9 +86,14 @@ public class GoodsController {
     @ApiImplicitParam(paramType = "path", name = "id", value = "主键ID", required = true, dataType = "Long")
     @DeleteMapping(value = "/{id}")
     public Result delete(@PathVariable Long id) {
-        //调用GoodsService实现根据主键删除
-        goodsService.delete(id);
-        return new Result(true, StatusCode.OK, "删除成功");
+        try {
+            //调用GoodsService实现根据主键删除
+            goodsService.delete(id);
+            return new Result(true, StatusCode.OK, "删除成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, StatusCode.ERROR, "删除失败：" + e.getMessage());
+        }
     }
 
     /***
@@ -130,9 +135,15 @@ public class GoodsController {
     @ApiImplicitParam(paramType = "path", name = "id", value = "主键ID", required = true, dataType = "Long")
     @GetMapping("/{id}")
     public Result<GoodsEntity> findById(@PathVariable Long id) {
-        //调用GoodsService实现根据主键查询Goods
-        GoodsEntity goodsEntity = goodsService.findById(id);
-        return new Result<GoodsEntity>(true, StatusCode.OK, "查询成功", goodsEntity);
+        try {
+            //调用GoodsService实现根据主键查询Goods
+            GoodsEntity goodsEntity = goodsService.findById(id);
+            return new Result<GoodsEntity>(true, StatusCode.OK, "查询成功", goodsEntity);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result<>(false, StatusCode.ERROR, "查询失败：" + e.getMessage());
+
+        }
     }
 
     /***
@@ -147,5 +158,73 @@ public class GoodsController {
         return new Result<List<Goods>>(true, StatusCode.OK, "查询成功", list);
     }
 
+    /***
+     * 商品审核
+     * @param id
+     * @return
+     */
+    @PutMapping("audit/{id}")
+    public Result audit(@PathVariable("id") Long id) {
+        try {
+            goodsService.audit(id);
+            return new Result(true, StatusCode.OK, "审核成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(true, StatusCode.ERROR, "审核失败：" + e.getMessage());
+        }
+    }
 
+    /***
+     * 上架商品
+     * @param id
+     * @return
+     */
+    @PutMapping("push/{id}")
+    public Result push(@PathVariable("id") Long id) {
+        try {
+            goodsService.push(id);
+            return new Result(true, StatusCode.OK, "上架成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, StatusCode.ERROR, "上架失败：" + e.getMessage());
+        }
+    }
+
+    /***
+     * 下架商品
+     * @param id
+     * @return
+     */
+    @PutMapping("pull/{id}")
+    public Result pull(@PathVariable("id") Long id) {
+        try {
+            goodsService.pull(id);
+            return new Result(true, StatusCode.OK, "下架成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, StatusCode.ERROR, "下架失败：" + e.getMessage());
+        }
+    }
+
+    /***
+     * 批量上架商品
+     * @param ids
+     * @return
+     */
+    @PutMapping("push/many")
+    public Result pushMany(@RequestBody Long[] ids) {
+        int rows = goodsService.pushMany(ids);
+        return new Result(true, StatusCode.OK, "批量上架数量：" + rows);
+    }
+
+    /***
+     * 批量下架商品
+     * @param ids
+     * @return
+     */
+    @PutMapping("pull/many")
+    public Result pullMany(@RequestBody Long[] ids) {
+        int rows = goodsService.pullMany(ids);
+        return new Result(true, StatusCode.OK, "批量下架数量：" + rows);
+    }
 }
