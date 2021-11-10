@@ -1,8 +1,11 @@
 package com.psi.sellergoods.service;
+
 import com.psi.sellergoods.pojo.Item;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.psi.entity.PageResult;
+
 import java.util.List;
+
 /****
  * @Author:ujiuye
  * @Description:Item业务层接口
@@ -55,14 +58,22 @@ public interface ItemService extends IService<Item> {
 
     /**
      * 根据ID查询Item
+     *
      * @param id
      * @return
      */
-     Item findById(Long id);
+    Item findById(Long id);
 
     /***
      * 查询所有Item
      * @return
      */
     List<Item> findAll();
+
+    /***
+     * 根据商品状态查询sku列表
+     * @param status
+     * @return
+     */
+    List<Item> findByStatus(String status);
 }

@@ -1,6 +1,7 @@
 package com.psi.canal.listener;
 
 import com.alibaba.fastjson.JSON;
+
 import com.alibaba.otter.canal.protocol.CanalEntry;
 import com.psi.content.feign.ContentFeign;
 import com.psi.content.pojo.Content;
