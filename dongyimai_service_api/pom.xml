@@ -13,6 +13,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>sellergoods_service_api</module>
+        <module>content_service_api</module>
     </modules>
 
     <dependencies>

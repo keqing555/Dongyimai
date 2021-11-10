@@ -1,0 +1,40 @@
+server:
+  port: 9003
+
+spring:
+  application:
+    name: dym-canal
+  redis:
+    host: 192.168.128.128
+    port: 6379
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka
+  instance:
+    prefer-ip-address: true
+
+feign:
+  hystrix:
+    enabled: true
+
+#hystrix 熔断器配置
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          #如果enabled设置为false，则请求超时交给ribbon控制
+          enabled: true
+        isolation:
+          strategy: SEMAPHORE #信号量
+
+#canal配置
+#操作数据库时，canal会捕获到mysql的binlog，解析出数据
+canal:
+  client:
+    instances:
+      example:
+        host: 192.168.128.128
+        port: 11111

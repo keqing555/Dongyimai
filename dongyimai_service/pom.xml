@@ -14,6 +14,8 @@
 
     <modules>
         <module>sellergoods_service</module>
+        <module>canal_service</module>
+        <module>content_service</module>
     </modules>
 
 
