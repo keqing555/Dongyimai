@@ -67,14 +67,18 @@ public class SkuServiceImpl implements SkuService {
         }
         //创建查询对象的构建对象NativeSearchQueryBuilder
         NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
-
+        /***
+         *   fieldName.keyword决定是否采用es分词数据源，
+         *  不带keyword即查询text格式数据（分词），
+         *  带即查询keyword格式数据（不分词）
+         */
         /***
          * 设置类别分组
          * terms表示分组后的列名
          */
         nativeSearchQueryBuilder.addAggregation(
                 AggregationBuilders.terms("skuCategoryGroup")
-                        .field("category"));
+                        .field("category").size(10));
         /***
          * 设置品牌分组
          */
