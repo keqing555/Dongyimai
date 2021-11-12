@@ -1,4 +1,7 @@
+server:
+  port: 8080
+
 spring:
   thymeleaf:
-    #关闭缓存（默认开启）
+    #关闭缓存（默认开启，模板在内存中处理非常快，不需要缓存，浪费空间）
     cache: false

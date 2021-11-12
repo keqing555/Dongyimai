@@ -7,6 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ThymeleafApp {
     public static void main(String[] args) {
         SpringApplication.run(ThymeleafApp.class, args);
-        System.out.println("");
+        System.out.println("Thymeleaf启动");
     }
 }

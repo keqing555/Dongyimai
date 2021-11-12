@@ -7,5 +7,38 @@
 <body>
 <!--文本输出-->
 <p th:text="${hello}"></p>
+
+<!--表单-->
+<form th:action="@{/leaf/hello}">
+    <button>提交</button>
+    <!--    <input type="submit" value="提交">-->
+</form>
+
+<!--遍历-->
+<table>
+    <tr th:each="name,stat:${list}">
+        <!--stat: {index = 0, count = 1, size = 4, current = 刻晴}	刻晴-->
+        <td th:text="${stat}"></td>
+        <td th:text="${name}"></td>
+    </tr>
+</table>
+
+<!--输出日期-->
+<div>
+    日期：<span th:text="${#dates.format(time,'yyyy-MM-dd hh:mm:ss')}"></span>
+</div>
+
+<!--条件判断-->
+<button th:if="${(age>=18)}" onclick="msg()">age</button>
+
+<!--字符串拼接-->
+<span th:text="|${str1}${str2}|"></span>
 </body>
+<!--thymeleaf-javascript-->
+<script th:inline="javascript">
+    var age = [[${age}]];//获取model中的值并赋给变量
+    function msg() {
+        alert("你这个年纪：" + age);
+    }
+</script>
 </html>
