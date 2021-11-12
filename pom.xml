@@ -11,6 +11,7 @@
         <module>dongyimai_service</module>
         <module>dongyimai_file_service</module>
         <module>code_template</module>
+        <module>springboot_thymeleaf</module>
     </modules>
 
     <parent>

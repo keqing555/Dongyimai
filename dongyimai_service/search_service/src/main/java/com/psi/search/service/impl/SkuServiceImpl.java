@@ -7,11 +7,19 @@ import com.psi.search.pojo.SkuInfo;
 import com.psi.search.service.SkuService;
 import com.psi.sellergoods.feign.ItemFeign;
 import com.psi.sellergoods.pojo.Item;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
+import org.elasticsearch.search.sort.FieldSortBuilder;
+import org.elasticsearch.search.sort.SortBuilder;
+import org.elasticsearch.search.sort.SortBuilders;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.*;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
@@ -63,15 +71,57 @@ public class SkuServiceImpl implements SkuService {
         //获取关键字
         String keywords = searchMap.get("keywords");
         if (StringUtils.isEmpty(keywords)) {
-            keywords = "华为";//给一个默认值
+            keywords = "小米";//给一个默认值
         }
+        /***
+         * 统计查询
+         */
         //创建查询对象的构建对象NativeSearchQueryBuilder
         NativeSearchQueryBuilder nativeSearchQueryBuilder = new NativeSearchQueryBuilder();
+
+        /***
+         * 设置查询过滤
+         */
+
+        //创建多条件组合查询对象
+        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+        //设置品牌查询条件
+        if (!StringUtils.isEmpty(searchMap.get("brand"))) {
+            boolQueryBuilder.filter(QueryBuilders.matchQuery("brand", searchMap.get("brand")));
+        }
+        //设置分类查询条件
+        if (!StringUtils.isEmpty(searchMap.get("category"))) {
+            boolQueryBuilder.filter(QueryBuilders.matchQuery("category", searchMap.get("category")));
+        }
+        //设置规格过滤查询
+        for (String key : searchMap.keySet()) {
+            if (key.startsWith("spec_")) {
+                String specName = key.substring(5);//截取规格名称
+                String specValue = searchMap.get(key);//获取规格值
+                //termQuery完全匹配搜索
+                boolQueryBuilder.filter(QueryBuilders.termQuery("specMap." + specName + ".keyword", specValue));
+            }
+        }
+        //按价格区间过滤 "price":"120-300"
+        if (!StringUtils.isEmpty(searchMap.get("price"))) {
+            String price = searchMap.get("price");
+            String[] split = price.split("-");
+            //设置价格区间
+            boolQueryBuilder.filter(QueryBuilders.rangeQuery("price").gte(split[0]));
+            boolQueryBuilder.filter(QueryBuilders.rangeQuery("price").lte(split[1]));
+        }
+
+
+        //关联过滤查询对象到查询器
+        nativeSearchQueryBuilder.withFilter(boolQueryBuilder);
+
+
         /***
          *   fieldName.keyword决定是否采用es分词数据源，
          *  不带keyword即查询text格式数据（分词），
          *  带即查询keyword格式数据（不分词）
          */
+
         /***
          * 设置类别分组
          * terms表示分组后的列名
@@ -84,7 +134,7 @@ public class SkuServiceImpl implements SkuService {
          */
         nativeSearchQueryBuilder.addAggregation(
                 AggregationBuilders.terms("skuBrandGroup")
-                        .field("brand.keyword"));
+                        .field("brand"));
         /***
          * 设置规格分组
          */
@@ -92,9 +142,49 @@ public class SkuServiceImpl implements SkuService {
                 AggregationBuilders.terms("skuSpecGroup")
                         .field("spec.keyword"));
 
+        /**
+         * 排序
+         */
+        //构建排序条件
+        String sortRule = searchMap.get("sortRule");
+        String sortField = searchMap.get("sortField");//desc asc
+        //判断二者都不为空
+        if (!StringUtils.isEmpty(sortRule) && !StringUtils.isEmpty(sortField)) {
+            //设置排序规则
+            SortOrder sortOrder = sortRule.equalsIgnoreCase("DESC") ? SortOrder.DESC : SortOrder.ASC;
+            FieldSortBuilder sortBuilder = SortBuilders.fieldSort(sortField).order(sortOrder);
+            //关联排序设置
+            nativeSearchQueryBuilder.withSort(sortBuilder);
+        }
+
 
         /***
-         * 设置查询条件
+         * 分页
+         */
+        Integer pageNum = 1;//默认第一页
+        if (!StringUtils.isEmpty(searchMap.get("pageNum"))) {
+            pageNum = Integer.parseInt(searchMap.get("pageNum"));//获取当前页码
+        }
+        Integer pageSize = 20;      //每页显示记录数
+        PageRequest pageRequest = PageRequest.of(pageNum - 1, pageSize);//第一个参数从0开始
+        //关联分页设置
+        nativeSearchQueryBuilder.withPageable(pageRequest);
+
+
+        /***
+         * 查询分页完数据后，把关键字高亮一下
+         */
+        //设置高亮条件
+        HighlightBuilder.Field highlightTitle = new HighlightBuilder.Field("title");
+        nativeSearchQueryBuilder.withHighlightFields(highlightTitle);
+        HighlightBuilder highlightBuilder = new HighlightBuilder().preTags("em style=\"color:red\">").postTags("</em>");
+        nativeSearchQueryBuilder.withHighlightBuilder(highlightBuilder);
+        //设置主关键字查询，修改为多字段的搜索条件
+        nativeSearchQueryBuilder.withQuery(QueryBuilders.multiMatchQuery(keywords, "title", "brand", "category"));
+
+
+        /***
+         * 构建查询器
          */
         //分词查询title字段
         MatchQueryBuilder matchQueryBuilder = QueryBuilders.matchQuery("title", keywords);
@@ -106,6 +196,24 @@ public class SkuServiceImpl implements SkuService {
         SearchHits<SkuInfo> searchHits = esRestTemplate.search(nativeSearchQuery, SkuInfo.class);
         //对searchHits进行分页封装,默认0-10
         SearchPage<SkuInfo> skuPage = SearchHitSupport.searchPageFor(searchHits, nativeSearchQuery.getPageable());
+
+
+        /***
+         * 获取高亮结果
+         */
+        for (SearchHit<SkuInfo> searchHit : searchHits) {
+            //获取高亮内容
+            Map<String, List<String>> highlightFields = searchHit.getHighlightFields();
+            String title = "";
+            if (StringUtils.isEmpty(highlightFields.get("title"))) {
+                title = searchHit.getContent().getTitle();
+            } else {
+                title = highlightFields.get("title").get(0);
+            }
+            //设置高亮标题
+            searchHit.getContent().setTitle(title);
+        }
+
 
         /***
          * 获取分组结果
