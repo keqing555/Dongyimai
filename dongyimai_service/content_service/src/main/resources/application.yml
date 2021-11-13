@@ -26,6 +26,7 @@ eureka:
 feign:
   hystrix:
     enabled: true
+
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true  #开启驼峰式编写规范

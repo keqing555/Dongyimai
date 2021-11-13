@@ -1,0 +1,26 @@
+server:
+  port: 9006
+
+spring:
+  thymeleaf:
+    #禁用模板缓存，（（默认开启，模板在内存中处理非常快，不需要缓存，浪费空间））
+    cache: false
+  application:
+    name: dym-itempage
+  main:
+    #允许重复生成bean，后生成的会覆盖掉先生成的
+    allow-bean-definition-overriding: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka
+  instance:
+    prefer-ip-address: true
+
+feign:
+  hystrix:
+    enabled: false
+
+# 生成静态页的位置
+pagepath: D:/Upload/staticpage/item

@@ -17,6 +17,7 @@
         <module>canal_service</module>
         <module>content_service</module>
         <module>search_service</module>
+        <module>itempage_service</module>
     </modules>
 
 

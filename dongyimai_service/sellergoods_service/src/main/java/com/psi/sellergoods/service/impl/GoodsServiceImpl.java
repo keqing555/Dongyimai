@@ -268,6 +268,7 @@ public class GoodsServiceImpl extends ServiceImpl<GoodsMapper, Goods> implements
     public GoodsEntity findById(Long id) {
         //根据ID查询SPU信息
         Goods goods = goodsMapper.selectById(id);
+        System.out.println(id);
         if (goods.getIsDelete().equals("1"))
             throw new RuntimeException("该商品已被删除");
         //根据id查询商品扩展信息

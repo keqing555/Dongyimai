@@ -1,5 +1,7 @@
 package com.psi.entity;
 
+import java.io.Serializable;
+
 /**
  * 返回结果实体类
  *

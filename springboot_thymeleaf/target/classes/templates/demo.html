@@ -30,9 +30,9 @@
 
 <!--条件判断-->
 <button th:if="${(age>=18)}" onclick="msg()">age</button>
-
+<br>
 <!--字符串拼接-->
-<span th:text="|${str1}${str2}|"></span>
+<span th:text="|${str1}of${str2}|"></span>
 </body>
 <!--thymeleaf-javascript-->
 <script th:inline="javascript">

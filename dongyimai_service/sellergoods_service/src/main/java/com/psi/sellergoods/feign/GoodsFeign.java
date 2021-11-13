@@ -12,7 +12,7 @@ import java.util.List;
  * @Description:
  * @Date 2021/2/1 14:19
  *****/
-@FeignClient(value="sellergoods")
+@FeignClient(value="dym-sellergoods")
 @RequestMapping("/goods")
 public interface GoodsFeign {
 
@@ -74,7 +74,7 @@ public interface GoodsFeign {
      * @return
      */
     @GetMapping("/{id}")
-    Result<Goods> findById(@PathVariable Long id);
+    Result<Goods> findById(@PathVariable("id") Long id);
 
     /***
      * 查询Goods全部数据
