@@ -38,3 +38,6 @@ canal:
       example:
         host: 192.168.128.128
         port: 11111
+
+# 生成静态页的位置
+pagepath: D:/Upload/staticpage/item

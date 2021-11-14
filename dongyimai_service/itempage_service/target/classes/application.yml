@@ -22,5 +22,6 @@ feign:
   hystrix:
     enabled: false
 
+
 # 生成静态页的位置
 pagepath: D:/Upload/staticpage/item

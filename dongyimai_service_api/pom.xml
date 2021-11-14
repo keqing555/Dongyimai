@@ -15,6 +15,7 @@
         <module>sellergoods_service_api</module>
         <module>content_service_api</module>
         <module>search_service_api</module>
+        <module>itempage_service_api</module>
     </modules>
 
     <dependencies>

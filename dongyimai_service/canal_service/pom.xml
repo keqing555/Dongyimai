@@ -28,6 +28,18 @@
             <artifactId>content_service_api</artifactId>
             <version>1.0</version>
         </dependency>
+        <!--静态页API 服务-->
+        <dependency>
+            <groupId>com.psi</groupId>
+            <artifactId>itempage_service_api</artifactId>
+            <version>1.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.alibaba</groupId>
+                    <artifactId>druid-spring-boot-starter</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 
 </project>

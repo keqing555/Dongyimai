@@ -79,7 +79,7 @@ public class PageServiceImpl implements PageService {
     private Map<String, Object> buildDateModel(Long spuId) {
         Map<String, Object> dataMap = new HashMap<>();
         //获取spu和sku
-//        GoodsEntity goodsEntity = goodsFeign.findById(spuId).getData();
+       // GoodsEntity goodsEntity = goodsFeign.findById(spuId).getData();
         Result result = goodsFeign.findById(spuId);
         GoodsEntity goodsEntity = (GoodsEntity) result.getData();
         Goods goods = goodsEntity.getGoods();
