@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class SendMsgController {
+
+    //简单队列名
+    private final String simple="simple_queue";
     //work消息模型队列名称
     private final String work = "work_queue";
     //发布者订阅模式交换机名称
@@ -19,13 +22,27 @@ public class SendMsgController {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
+
+    /***
+     * 简单消息队列
+     * 一个生产者向一个消费者发送消息
+     * @return
+     */
+    @GetMapping("/simple")
+    public String simple(){
+        for(int i=0;i<10;i++){
+            rabbitTemplate.convertAndSend(simple,"简单消息列队："+i);
+        }
+        return "<h1>消息发送成功。。。<h1>";
+    }
+
     /***
      * work消息模型
      * @return
      */
     @GetMapping("/work")
     public String work() {
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 10; i++) {
             rabbitTemplate.convertAndSend(work, "work消息队列" + i);
         }
         return "<h1>消息发送成功。。。<h1>";
@@ -38,7 +55,7 @@ public class SendMsgController {
      */
     @GetMapping("/fanout")
     public String fanout() {
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 10; i++) {
             // System.out.println("发布订阅模式消息列队" + i);
             rabbitTemplate.convertAndSend(fanoutExchange, "", "发布订阅模式消息列队" + i);
         }
@@ -54,7 +71,7 @@ public class SendMsgController {
         for (int i = 0; i < 10; i++) {
             rabbitTemplate.convertAndSend("direct_exchange",
                     "direct_key_1",
-                    "消息队列key1" + i);
+                    "消息队列key1_" + i);
         }
         return "<h1>消息发送成功。。。<h1>";
     }
@@ -64,7 +81,7 @@ public class SendMsgController {
         for (int i = 0; i < 10; i++) {
             rabbitTemplate.convertAndSend("direct_exchange",
                     "direct_key_2",
-                    "消息队列key2" + i);
+                    "消息队列key2_" + i);
         }
         return "<h1>消息发送成功。。。<h1>";
     }

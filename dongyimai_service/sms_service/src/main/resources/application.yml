@@ -1,0 +1,17 @@
+server:
+  port: 9007
+
+spring:
+  appication:
+    name: dym-sms
+  rabbitmq:
+    host: 192.168.128.128
+    port: 5672
+    username: root
+    password: root
+
+
+#鼎信106短信接口信息
+sms:
+  appcode: d4e9ab656ec141fa97b85e84210e9d2e
+  tpl_id: TP1711063

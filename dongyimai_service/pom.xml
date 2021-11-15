@@ -18,6 +18,8 @@
         <module>content_service</module>
         <module>search_service</module>
         <module>itempage_service</module>
+        <module>sms_service</module>
+        <module>user_service</module>
     </modules>
 
 

@@ -3,28 +3,30 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>Dongyimai</artifactId>
+        <artifactId>dongyimai_service</artifactId>
         <groupId>com.psi</groupId>
         <version>1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>dongyimai_service_api</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>sellergoods_service_api</module>
-        <module>content_service_api</module>
-        <module>search_service_api</module>
-        <module>itempage_service_api</module>
-        <module>user_service_api</module>
-    </modules>
+    <artifactId>user_service</artifactId>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
+
 
     <dependencies>
         <dependency>
             <groupId>com.psi</groupId>
-            <artifactId>dongyimai_common_db</artifactId>
+            <artifactId>user_service_api</artifactId>
             <version>1.0</version>
         </dependency>
-    </dependencies>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+    </dependencies>
 </project>
