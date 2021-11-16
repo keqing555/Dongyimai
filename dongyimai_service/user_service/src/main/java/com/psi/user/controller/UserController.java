@@ -1,17 +1,22 @@
 package com.psi.user.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.psi.entity.PageResult;
 import com.psi.entity.Result;
 import com.psi.entity.StatusCode;
 import com.psi.user.pojo.User;
 import com.psi.user.service.UserService;
 import com.psi.utils.BCrypt;
+import com.psi.utils.JwtUtil;
 import com.psi.utils.PhoneFormatCheckUtils;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /****
  * @Author:ujiuye
@@ -198,13 +203,24 @@ public class UserController {
      * @return
      */
     @PostMapping("login")
-    public Result<User> login(String username, String password) {
+    public Result<String> login(String username, String password) {
         //根据用户名获取用户信息
         User user = userService.findByUsername(username);
 
         if (user != null) {
-            if (BCrypt.checkpw(password, user.getPassword()))
-                return new Result<>(true, StatusCode.OK, "登录成功",user);
+            if (BCrypt.checkpw(password, user.getPassword())) {
+                //登录成功签发jwt-token令牌
+                Map<String, Object> map = new HashMap<>();
+                map.put("role", "USER");
+                map.put("success", "SUCCESS");
+                map.put("username", username);
+                //生成令牌
+                String jwt = JwtUtil.createJWT(UUID.randomUUID().toString(),
+                        JSON.toJSONString(map),
+                        null);
+                //返回jwt
+                return new Result<>(true, StatusCode.OK, "登录成功", jwt);
+            }
             return new Result<>(false, StatusCode.ERROR, "密码错误");
         }
         return new Result<>(false, StatusCode.ERROR, "没有该用户");
