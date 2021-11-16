@@ -47,5 +47,12 @@
             <artifactId>jetty-util</artifactId>
             <version>9.3.7.v20160115</version>
         </dependency>-->
+
+<!--该模块不需要端口-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
     </dependencies>
 </project>

@@ -1,0 +1,52 @@
+server:
+  port: 8001
+
+spring:
+  application:
+    name: gateway-web
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]': #匹配所有请求
+            allowedOrigins: "*"     #跨域处理，允许所有的域
+            allowedMethods: #支持的方法
+              - GET
+              - POST
+              - PUT
+              - DELETE
+      routes:
+        - id: goods-route
+          #uri: http://localhost:9001
+          #客户端负载均衡
+          uri: lb://dym-sellergoods       #loadBlance所有请求都交给该服务
+          predicates:
+            #Host路由配置:
+            #- Host=www.dym.com**
+            #Path路径匹配过滤:
+            #- Path=/brand/**        以brand开头的请求都交给uri
+            #PrefixPath过滤配置
+            # - Path=/**               #访问网关任意路径都会转发到localhost:9001
+            # filters:
+            #  - PrefixPath=/brand    #自动在所有请求中加一个前缀/brand
+            #StripPrefix过滤配置
+            #- Path=/api/brand/**
+            #filters:
+            #- StripPrefix=1       #把请求路径中第一个路径过滤掉
+            #RewritePath路径重写过滤配器
+            - Path=/api/brand/**
+          filters:
+            - RewritePath=/api/(?<segment>.*),/$\{segment}
+
+        - id: user-route
+          uri: lb://dym-user
+          predicates:
+            - Path=/api/user/**,/api/address/**,/api/areas/**,/api/cities/**,/api/provinces/**
+          filters:
+            - StripPrefix=1
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka

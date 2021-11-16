@@ -83,5 +83,12 @@ public interface UserService extends IService<User> {
      * @param code
      * @return
      */
-    boolean checkSmsCode(String phone,String code);
+    boolean checkSmsCode(String phone, String code);
+
+    /***
+     * 根据用户名查找用户
+     * @param username
+     * @return
+     */
+    User findByUsername(String username);
 }

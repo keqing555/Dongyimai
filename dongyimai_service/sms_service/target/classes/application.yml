@@ -2,7 +2,7 @@ server:
   port: 9007
 
 spring:
-  appication:
+  application:
     name: dym-sms
   rabbitmq:
     host: 192.168.128.128

@@ -5,6 +5,7 @@ import com.psi.entity.Result;
 import com.psi.entity.StatusCode;
 import com.psi.user.pojo.User;
 import com.psi.user.service.UserService;
+import com.psi.utils.BCrypt;
 import com.psi.utils.PhoneFormatCheckUtils;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -188,5 +189,24 @@ public class UserController {
             e.printStackTrace();
             return new Result(false, StatusCode.ERROR, "注册失败");
         }
+    }
+
+    /***
+     * 登录
+     * @param username
+     * @param password
+     * @return
+     */
+    @PostMapping("login")
+    public Result<User> login(String username, String password) {
+        //根据用户名获取用户信息
+        User user = userService.findByUsername(username);
+
+        if (user != null) {
+            if (BCrypt.checkpw(password, user.getPassword()))
+                return new Result<>(true, StatusCode.OK, "登录成功",user);
+            return new Result<>(false, StatusCode.ERROR, "密码错误");
+        }
+        return new Result<>(false, StatusCode.ERROR, "没有该用户");
     }
 }

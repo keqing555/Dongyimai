@@ -12,6 +12,7 @@
         <module>dongyimai_file_service</module>
         <module>code_template</module>
         <module>springboot_thymeleaf</module>
+        <module>dongyimai_gateway</module>
     </modules>
 
     <parent>
@@ -89,6 +90,12 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
             <version>${swagger.version}</version>
+        </dependency>
+        <!--鉴权-->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.9.0</version>
         </dependency>
     </dependencies>
 

@@ -281,4 +281,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         return false;
     }
+
+    @Override
+    public User findByUsername(String username) {
+
+        User user = new User();
+        user.setUsername(username);
+        List<User> list = this.findList(user);
+
+        if (list != null && list.size() > 0) {
+            return list.get(0);
+        }
+        return null;
+    }
 }
