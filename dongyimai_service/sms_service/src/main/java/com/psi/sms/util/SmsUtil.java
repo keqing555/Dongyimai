@@ -35,6 +35,7 @@ public class SmsUtil {
 
         HttpResponse httpResponse = null;
         try {
+            //发送短信验证码
             httpResponse = HttpUtils.doPost(host, path, method, headers, querys, bodys);
         } catch (Exception e) {
             e.printStackTrace();

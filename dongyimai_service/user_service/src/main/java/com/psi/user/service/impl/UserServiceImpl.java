@@ -238,12 +238,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return this.list(new QueryWrapper<User>());
     }
 
-
+    /***
+     * 生成短信验证码
+     * redis储存一份
+     * RabbitMQ消息队列存储一份
+     * 短信服务监听到消息队列验证码时，会发送到指定手机号
+     * @param phone
+     */
     @Override
     public void createSmsCode(String phone) {
         //生成六位随机数
-        String code = Math.random() * 1000000 + "";
-        System.out.println("验证码：" + code);
+        String random = Math.random() + "";
+        String code = random.substring(random.length() - 6);
+        System.out.println("生成的验证码：" + code);
 
         //存入redis
         redisTemplate.boundHashOps("smscode").put(phone, code);
@@ -256,6 +263,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         rabbitTemplate.convertAndSend("dym_sms_queue", map);
     }
 
+    /***
+     * 与redis里存储的短信验证码做校验
+     * @param phone
+     * @param code
+     * @return
+     */
     @Override
     public boolean checkSmsCode(String phone, String code) {
         //获取redis中的验证码
