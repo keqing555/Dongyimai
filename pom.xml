@@ -13,6 +13,7 @@
         <module>code_template</module>
         <module>springboot_thymeleaf</module>
         <module>dongyimai_gateway</module>
+        <module>dongyimai_user_oauth</module>
     </modules>
 
     <parent>

@@ -13,6 +13,9 @@ import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -146,7 +149,10 @@ public class UserController {
      */
     @ApiOperation(value = "查询所有User", notes = "查询所User有方法详情", tags = {"UserController"})
     @GetMapping
-    public Result<List<User>> findAll() {
+    public Result<List<User>> findAll(HttpServletRequest request) {
+        //获取令牌信息
+        String authorization = request.getHeader("Authorization");
+        System.out.println("令牌信息："+authorization);
         //调用UserService实现查询所有User
         List<User> list = userService.findAll();
         return new Result<List<User>>(true, StatusCode.OK, "查询成功", list);
@@ -203,7 +209,7 @@ public class UserController {
      * @return
      */
     @PostMapping("login")
-    public Result<String> login(String username, String password) {
+    public Result<String> login(String username, String password, HttpServletResponse response) {
         //根据用户名获取用户信息
         User user = userService.findByUsername(username);
 
@@ -218,6 +224,10 @@ public class UserController {
                 String jwt = JwtUtil.createJWT(UUID.randomUUID().toString(),
                         JSON.toJSONString(map),
                         null);
+                //添加到cookie
+                Cookie cookie = new Cookie("Authorization", jwt);
+                cookie.setMaxAge(2 * 60 * 1000);//cookie有效时间
+                response.addCookie(cookie);
                 //返回jwt
                 return new Result<>(true, StatusCode.OK, "登录成功", jwt);
             }

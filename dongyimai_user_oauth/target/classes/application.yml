@@ -1,0 +1,19 @@
+server:
+  port: 9100
+
+spring:
+  application:
+    name: user-auth
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+#密钥库配置
+encrypt:
+  key-store:
+    location: classpath:dongyimai.jks   #密钥库文件路径
+    alias: dongyimai    #密钥库别名
+    password: dongyimai   #密钥库密码
+    secret: dongyimai   #密钥密码

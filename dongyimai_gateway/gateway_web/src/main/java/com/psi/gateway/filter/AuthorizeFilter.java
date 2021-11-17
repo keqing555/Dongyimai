@@ -5,6 +5,7 @@ import io.jsonwebtoken.Claims;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
+import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
@@ -34,7 +35,10 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
         String path = request.getURI().getPath();
 
         //无需登录即可访问的资源
-        if (path.startsWith("/api/user/login") || path.startsWith("/api/brand/search/")) {
+        if (path.startsWith("/api/user/sendCode")
+                || path.startsWith("/api/user/add")
+                || path.startsWith("/api/user/login")
+                || path.startsWith("/api/brand/search/")) {
             Mono<Void> mono = chain.filter(exchange);
             return mono;
         }
@@ -49,6 +53,12 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
             token = request.getQueryParams().getFirst(AUTHORIZE_TOKEN);
         }
 
+        //从Cookie里获取令牌
+        HttpCookie cookie = request.getCookies().getFirst(AUTHORIZE_TOKEN);
+        if (cookie != null) {
+            token = cookie.getValue();
+        }
+
         //如果都没有jwt信息，则输出错误代码
         if (StringUtils.isEmpty(token)) {
             //设置方法不允许被访问，错误代码405
@@ -60,6 +70,8 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
         //有jwt令牌信息，解析
         try {
             Claims claims = JwtUtil.parseJWT(token);
+            //将令牌数据添加到头文件
+            request.mutate().header(AUTHORIZE_TOKEN, claims.toString());
             //解析没有发生异常，令牌正确成功
             return chain.filter(exchange);
         } catch (Exception e) {
