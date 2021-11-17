@@ -226,6 +226,7 @@ public class UserController {
                         null);
                 //添加到cookie
                 Cookie cookie = new Cookie("Authorization", jwt);
+                cookie.setPath("/");
                 cookie.setMaxAge(2 * 60 * 1000);//cookie有效时间
                 response.addCookie(cookie);
                 //返回jwt

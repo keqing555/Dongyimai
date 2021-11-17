@@ -17,3 +17,10 @@ encrypt:
     alias: dongyimai    #密钥库别名
     password: dongyimai   #密钥库密码
     secret: dongyimai   #密钥密码
+
+auth:
+  ttl: 3600   #token过期时间
+  clientId: admin   #客户端id
+  clientSecret: admin   #客户端密码
+  cookieDomain: localhost   #cookie域名
+  cookieMaxAge: -1    #cookie有效期
