@@ -19,6 +19,7 @@ spring:
     port: 5672
     username: root
     password: root
+
 eureka:
   client:
     service-url:
@@ -29,6 +30,7 @@ eureka:
     prefer-ip-address: true
     ip-address: 127.0.0.1
     instance-id: ${spring.application.name}:${server.port}
+
 feign:
   hystrix:
     enabled: true

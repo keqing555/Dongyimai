@@ -19,4 +19,5 @@ public interface UserFeign {
     @GetMapping("load/{username}")
     Result<User> findByUsername(@PathVariable("username") String username);
 
+
 }

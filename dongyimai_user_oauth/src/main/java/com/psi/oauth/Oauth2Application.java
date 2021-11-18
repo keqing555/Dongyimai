@@ -21,4 +21,5 @@ public class Oauth2Application {
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
+
 }
