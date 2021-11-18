@@ -11,6 +11,7 @@ import com.psi.utils.JwtUtil;
 import com.psi.utils.PhoneFormatCheckUtils;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
@@ -134,6 +135,8 @@ public class UserController {
      * @param id
      * @return
      */
+    //表示admin,root权限才能访问该方法（也可加在类上）
+    @PreAuthorize("hasAnyAuthority('admin','root')")
     @ApiOperation(value = "User根据ID查询", notes = "根据ID查询User方法详情", tags = {"UserController"})
     @ApiImplicitParam(paramType = "path", name = "id", value = "主键ID", required = true, dataType = "Long")
     @GetMapping("/{id}")
@@ -152,7 +155,7 @@ public class UserController {
     public Result<List<User>> findAll(HttpServletRequest request) {
         //获取令牌信息
         String authorization = request.getHeader("Authorization");
-        System.out.println("令牌信息："+authorization);
+        System.out.println("令牌信息：" + authorization);
         //调用UserService实现查询所有User
         List<User> list = userService.findAll();
         return new Result<List<User>>(true, StatusCode.OK, "查询成功", list);
@@ -235,5 +238,11 @@ public class UserController {
             return new Result<>(false, StatusCode.ERROR, "密码错误");
         }
         return new Result<>(false, StatusCode.ERROR, "没有该用户");
+    }
+
+    @GetMapping("load/{username}")
+    public Result findByUsername(@PathVariable("usernmae") String username) {
+        User user = userService.findByUsername(username);
+        return new Result(true, StatusCode.OK, "查询成功", user);
     }
 }

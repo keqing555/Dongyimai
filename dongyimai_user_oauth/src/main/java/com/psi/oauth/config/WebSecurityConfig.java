@@ -54,7 +54,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     //声明自定义认证对象
-    @Bean(name = "userDetailsService")
+ /*        auth包里配置了角色，这里注释掉
+ @Bean(name = "userDetailsService")
     @Override
     public UserDetailsService userDetailsServiceBean() throws Exception {
         return this.CreateUserDetailsService();
@@ -77,7 +78,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         users.add(OneUser);
         users.add(TowUser);
         return new InMemoryUserDetailsManager(users);
-    }
+    }*/
 
 
     //声明密码加密器

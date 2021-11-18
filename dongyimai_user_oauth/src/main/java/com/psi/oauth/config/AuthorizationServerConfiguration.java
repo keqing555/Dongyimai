@@ -19,6 +19,7 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 
 import javax.annotation.Resource;
+import javax.sql.DataSource;
 import java.security.KeyPair;
 
 @Configuration
@@ -40,6 +41,10 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     //引用证书读取工具类
     @Resource(name = "keyProp")   //指定引用对象名称，避免混淆
     private KeyProperties keyProperties;
+
+    //注入数据源
+    @Autowired
+    private DataSource dataSource;
 
     /**
      * 读取证书方法
@@ -90,6 +95,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     //客户端账号配置
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+/*
         //在内存中创建账号
         clients.inMemory()
                 // admin，授权码认证、密码认证、客户端认证、简单认证、刷新token
@@ -99,7 +105,11 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
                 .scopes("server", "app")//作用范围
                 .authorizedGrantTypes("authorization_code", "password", "refresh_token", "client_credentials", "implicit")//登录授权模式
                 .redirectUris("http://localhost");//登录成功跳转地址
-
+*/
+        //关联数据源
+        clients.jdbc(dataSource)
+                //设置密码加密方式
+                .passwordEncoder(passwordEncoder);
     }
 
     //端点令牌存储方式、关联自定义认证对象、认证管理器

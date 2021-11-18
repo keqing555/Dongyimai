@@ -19,7 +19,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -35,7 +34,7 @@ public class AuthServiceImpl implements AuthService {
     public AuthToken login(String username, String password, String clientId, String clientSecret) {
 
         //申请令牌
-        AuthToken authToken = applyToken(username, password, clientId, clientSecret);
+        AuthToken authToken = this.applyToken(username, password, clientId, clientSecret);
 
         if (authToken == null) {
             throw new RuntimeException("申请令牌失败");
@@ -72,7 +71,7 @@ public class AuthServiceImpl implements AuthService {
 
         //定义头
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-        headers.add("Authorization", httpBasic(clientId, clientSecret));
+        headers.add("Authorization", this.httpBasic(clientId, clientSecret));
 
         //如果想捕捉服务本身抛出的异常信息，需要通过自行实现RestTemplate的ErrorHandler。
         restTemplate.setErrorHandler(new DefaultResponseErrorHandler() {

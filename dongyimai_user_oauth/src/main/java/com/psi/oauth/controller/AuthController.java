@@ -48,19 +48,24 @@ public class AuthController {
         //获取用户身份令牌
         String accessToken = authToken.getAccessToken();
 
-        //把令牌存储到cookie
-        CookieUtil.addCookie(
-                response,
-                cookieDomain,            //cookie域名
-                "/",                //
-                "Authorization",   //cookie名字
-                accessToken,            //cookie值
-                cookieMaxAge,           //cookie生命周期
-                false);
-//
-//        Cookie cookie = new Cookie("Authorization", accessToken);
-//        response.addCookie(cookie);
-//
+        //使用cookie工具类把令牌存储到cookie
+//        CookieUtil.addCookie(
+//                response,
+//                cookieDomain,            //cookie域名
+//                "/",                //
+//                "Authorization",   //cookie名字
+//                accessToken,            //cookie值
+//                cookieMaxAge,           //cookie生命周期
+//                false);
+
+        Cookie cookie = new Cookie("Authorization", accessToken);
+        cookie.setDomain(cookieDomain);
+        cookie.setPath("/");
+        cookie.setMaxAge(cookieMaxAge);
+        cookie.setHttpOnly(false);
+
+        response.addCookie(cookie);
+
         return new Result(true, StatusCode.OK, "登录成功");
     }
 }

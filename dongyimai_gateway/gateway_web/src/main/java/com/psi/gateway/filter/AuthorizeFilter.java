@@ -67,16 +67,27 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
             return mono;
         }
 
-        //有jwt令牌信息，解析
+
+        /**
+         * 解析jwt令牌信息
+         * 如果解析没有发生异常，令牌正确成功
+         * 如果解析异常，请求携带的令牌错误
+         */
         try {
-            Claims claims = JwtUtil.parseJWT(token);
+/*            Claims claims = JwtUtil.parseJWT(token);
             //将令牌数据添加到头文件
-            request.mutate().header(AUTHORIZE_TOKEN, claims.toString());
-            //解析没有发生异常，令牌正确成功
+            request.mutate().header(AUTHORIZE_TOKEN, claims.toString());*/
+
+            //不解析里令牌，直接封装到请求头中
+            if (token.startsWith("Bearer ") || token.startsWith("bearer ")) {
+                request.mutate().header(AUTHORIZE_TOKEN, token);
+            } else {
+                request.mutate().header(AUTHORIZE_TOKEN, "Bearer " + token);
+            }
+
             return chain.filter(exchange);
         } catch (Exception e) {
             e.printStackTrace();
-            //解析异常，请求携带的令牌错误
             response.setStatusCode(HttpStatus.UNAUTHORIZED);
             return response.setComplete();
         }

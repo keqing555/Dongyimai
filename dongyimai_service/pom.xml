@@ -22,5 +22,12 @@
         <module>user_service</module>
     </modules>
 
+    <dependencies>
+        <!--oauth依赖-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-oauth2</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>
