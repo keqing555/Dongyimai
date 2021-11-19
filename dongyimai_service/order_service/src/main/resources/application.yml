@@ -1,0 +1,42 @@
+server:
+  port: 9009
+
+spring:
+  application:
+    name: dym-order
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.128.128:33306/dongyimaidb?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+    username: root
+    password: root
+    type: com.alibaba.druid.pool.DruidDataSource
+  redis:
+    host: 192.168.128.128
+    port: 6379
+  main:
+    #允许重复定义bean
+    allow-bean-definition-overriding: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    lease-renewal-interval-in-seconds: 5 #每隔5秒发一次心跳
+    lease-expiration-duration-in-seconds: 10 #10秒不发送就过期
+    prefer-ip-address: true
+    ip-address: 127.0.0.1
+    instance-id: ${spring.application.name}:${server.port}
+
+feign:
+  hystrix:
+    enabled: true
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+  type-aliases-package: com.psi.order.dao
+#打印dubug级别日志
+logging:
+  level:
+    com.psi.order: debug

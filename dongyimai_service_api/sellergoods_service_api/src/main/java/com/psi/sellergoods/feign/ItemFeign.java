@@ -14,10 +14,18 @@ import java.util.List;
 public interface ItemFeign {
 
     /***
-     * 根据审核状态查询Sku
+     * 根据审核状态查询Sku，0，1
      * @param status
      * @return
      */
     @GetMapping("status/{status}")
     Result<List<Item>> findByStatus(@PathVariable("status") String status);
+
+    /**
+     * 根据id查询Item
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    Result<Item> findById(@PathVariable("id") Long id);
 }

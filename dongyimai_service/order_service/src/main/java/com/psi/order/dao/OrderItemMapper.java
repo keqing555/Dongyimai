@@ -1,6 +1,7 @@
-package com.psi.sellergoods.dao;
-import com.psi.sellergoods.pojo.OrderItem;
+package com.psi.order.dao;
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.psi.order.pojo.OrderItem;
 
 /****
  * @Author:ujiuye

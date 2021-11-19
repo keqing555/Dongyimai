@@ -1,0 +1,18 @@
+package com.psi.order;
+
+import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+
+@SpringBootApplication
+@EnableEurekaClient
+@MapperScan(basePackages = {"com.psi.order.dao"})
+@EnableFeignClients(basePackages = {"com.psi.sellergoods.feign"})
+public class OrderApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(OrderApplication.class, args);
+        System.out.println("Order服务启动");
+    }
+}

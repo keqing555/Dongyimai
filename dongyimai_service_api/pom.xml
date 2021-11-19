@@ -18,6 +18,7 @@
         <module>search_service_api</module>
         <module>itempage_service_api</module>
         <module>user_service_api</module>
+        <module>order_service_api</module>
     </modules>
 
     <dependencies>

@@ -1,9 +1,10 @@
-package com.psi.sellergoods.controller;
-import com.psi.sellergoods.pojo.OrderItem;
-import com.psi.sellergoods.service.OrderItemService;
+package com.psi.order.controller;
+
 import com.psi.entity.PageResult;
 import com.psi.entity.Result;
 import com.psi.entity.StatusCode;
+import com.psi.order.pojo.OrderItem;
+import com.psi.order.service.OrderItemService;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

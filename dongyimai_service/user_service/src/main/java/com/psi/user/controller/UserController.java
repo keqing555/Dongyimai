@@ -241,8 +241,8 @@ public class UserController {
     }
 
     @GetMapping("load/{username}")
-    public Result findByUsername(@PathVariable("usernmae") String username) {
+    public Result<User> findByUsername(@PathVariable("username") String username) {
         User user = userService.findByUsername(username);
-        return new Result(true, StatusCode.OK, "查询成功", user);
+        return new Result<>(true, StatusCode.OK, "查询成功", user);
     }
 }

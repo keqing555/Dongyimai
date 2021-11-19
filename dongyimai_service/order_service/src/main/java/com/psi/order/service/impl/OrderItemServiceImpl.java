@@ -1,9 +1,9 @@
-package com.psi.sellergoods.service.impl;
-import com.psi.sellergoods.dao.OrderItemMapper;
-import com.psi.sellergoods.pojo.OrderItem;
-import com.psi.sellergoods.service.OrderItemService;
+package com.psi.order.service.impl;
+
 import com.psi.entity.PageResult;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.psi.order.dao.OrderItemMapper;
+import com.psi.order.pojo.OrderItem;
+import com.psi.order.service.OrderItemService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -17,7 +17,7 @@ import java.util.List;
  * @Date 2021/2/1 14:19
  *****/
 @Service
-public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper,OrderItem> implements OrderItemService {
+public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem> implements OrderItemService {
 
 
     /**

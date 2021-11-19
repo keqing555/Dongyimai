@@ -1,10 +1,11 @@
-package com.psi.sellergoods.feign;
+package com.psi.order.feign;
+
 import com.psi.entity.PageResult;
 import com.psi.entity.Result;
-import com.psi.sellergoods.pojo.OrderItem;
-import com.psi.sellergoods.pojo.Order;
+import com.psi.order.pojo.OrderItem;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 /****
@@ -12,7 +13,7 @@ import java.util.List;
  * @Description:
  * @Date 2021/2/1 14:19
  *****/
-@FeignClient(value="sellergoods")
+@FeignClient(value = "sellergoods")
 @RequestMapping("/orderItem")
 public interface OrderItemFeign {
 
@@ -23,8 +24,8 @@ public interface OrderItemFeign {
      * @param size
      * @return
      */
-    @PostMapping("/search/{page}/{size}" )
-    Result<PageResult<OrderItem>> findPage(@RequestBody(required = false) OrderItem orderItem, @PathVariable  int page, @PathVariable  int size);
+    @PostMapping("/search/{page}/{size}")
+    Result<PageResult<OrderItem>> findPage(@RequestBody(required = false) OrderItem orderItem, @PathVariable int page, @PathVariable int size);
 
     /***
      * OrderItem分页搜索实现
@@ -32,15 +33,15 @@ public interface OrderItemFeign {
      * @param size:每页显示多少条
      * @return
      */
-    @GetMapping("/search/{page}/{size}" )
-    Result<PageResult<OrderItem>> findPage(@PathVariable  int page, @PathVariable  int size);
+    @GetMapping("/search/{page}/{size}")
+    Result<PageResult<OrderItem>> findPage(@PathVariable int page, @PathVariable int size);
 
     /***
      * 多条件搜索品牌数据
      * @param orderItem
      * @return
      */
-    @PostMapping("/search" )
+    @PostMapping("/search")
     Result<List<OrderItem>> findList(@RequestBody(required = false) OrderItem orderItem);
 
     /***
@@ -48,7 +49,7 @@ public interface OrderItemFeign {
      * @param id
      * @return
      */
-    @DeleteMapping("/{id}" )
+    @DeleteMapping("/{id}")
     Result delete(@PathVariable Long id);
 
     /***
@@ -58,7 +59,7 @@ public interface OrderItemFeign {
      * @return
      */
     @PutMapping("/{id}")
-    Result update(@RequestBody OrderItem orderItem,@PathVariable Long id);
+    Result update(@RequestBody OrderItem orderItem, @PathVariable Long id);
 
     /***
      * 新增OrderItem数据
