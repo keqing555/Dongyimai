@@ -2,6 +2,7 @@ package com.psi.user.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.psi.entity.PageResult;
+import com.psi.user.pojo.Address;
 import com.psi.user.pojo.User;
 
 import java.util.List;
@@ -91,4 +92,6 @@ public interface UserService extends IService<User> {
      * @return
      */
     User findByUsername(String username);
+
+
 }

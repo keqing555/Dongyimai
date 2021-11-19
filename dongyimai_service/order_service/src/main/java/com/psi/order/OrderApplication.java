@@ -1,6 +1,7 @@
 package com.psi.order;
 
 import com.psi.order.config.FeignInterceptor;
+import com.psi.utils.IdWorker;
 import com.psi.utils.TokenDecode;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -35,5 +36,14 @@ public class OrderApplication {
     @Bean
     public TokenDecode tokenDecode() {
         return new TokenDecode();
+    }
+
+    /**
+     * 基于雪花算法的id生成器
+     * @return
+     */
+    @Bean
+    public IdWorker idWorker(){
+        return new IdWorker(1,1);
     }
 }

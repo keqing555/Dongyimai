@@ -20,7 +20,7 @@ import java.lang.Integer;
 public class OrderItem implements Serializable {
 
     @ApiModelProperty(value = "", required = false)
-    @TableId(type = IdType.AUTO)
+    @TableId(type = IdType.INPUT)//手动注入id
     @TableField(value = "id")
     private Long id;//
 

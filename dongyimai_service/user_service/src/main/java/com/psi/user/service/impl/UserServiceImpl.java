@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.psi.entity.PageResult;
 import com.psi.user.dao.UserMapper;
+import com.psi.user.pojo.Address;
 import com.psi.user.pojo.User;
 import com.psi.user.service.UserService;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -294,4 +295,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         return null;
     }
+
+
 }

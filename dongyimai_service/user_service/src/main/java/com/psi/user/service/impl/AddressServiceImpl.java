@@ -1,12 +1,9 @@
-package com.psi.sellergoods.service.impl;
-import com.psi.sellergoods.dao.AddressMapper;
-import com.psi.sellergoods.pojo.Address;
-import com.psi.sellergoods.service.AddressService;
+package com.psi.user.service.impl;
+
 import com.psi.entity.PageResult;
-import com.psi.entity.PageResult;
-import com.psi.sellergoods.dao.AddressMapper;
-import com.psi.sellergoods.pojo.Address;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.psi.user.dao.AddressMapper;
+import com.psi.user.pojo.Address;
+import com.psi.user.service.AddressService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -170,5 +167,13 @@ public class AddressServiceImpl extends ServiceImpl<AddressMapper, Address> impl
     @Override
     public List<Address> findAll() {
         return this.list(new QueryWrapper<Address>());
+    }
+
+
+    @Override
+    public List<Address> findAddressByUid(String userId) {
+        QueryWrapper<Address> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("user_id",userId);
+        return this.list(queryWrapper);
     }
 }

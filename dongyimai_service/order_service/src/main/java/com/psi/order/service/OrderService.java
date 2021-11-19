@@ -6,6 +6,7 @@ import com.psi.order.pojo.Order;
 
 
 import java.util.List;
+import java.util.Map;
 
 /****
  * @Author:ujiuye
@@ -53,9 +54,9 @@ public interface OrderService extends IService<Order> {
 
     /***
      * 新增Order
-     * @param order
+     * @param map
      */
-    void add(Order order);
+    void add(Map map);
 
     /**
      * 根据ID查询Order

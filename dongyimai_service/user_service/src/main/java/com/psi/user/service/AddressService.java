@@ -1,9 +1,10 @@
-package com.psi.sellergoods.service;
-import com.psi.sellergoods.pojo.Address;
+package com.psi.user.service;
+
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.psi.entity.PageResult;
 import com.psi.entity.PageResult;
-import com.psi.sellergoods.pojo.Address;
+import com.psi.user.pojo.Address;
+
 
 import java.util.List;
 /****
@@ -68,4 +69,11 @@ public interface AddressService extends IService<Address> {
      * @return
      */
     List<Address> findAll();
+
+    /***
+     * 根据用户id查询收货地址（多个）
+     * @param uid
+     * @return
+     */
+    List<Address> findAddressByUid(String userId);
 }
