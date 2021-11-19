@@ -40,3 +40,27 @@ mybatis-plus:
 logging:
   level:
     com.psi.order: debug
+
+DYM-ORDER: #服务名称
+  ribbon:
+    #配置指定服务的负载均衡策略
+    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RoundRobinRule
+    # Ribbon的连接超时时间
+    ConnectTimeout: 2000
+    # Ribbon的数据读取超时时间
+    ReadTimeout: 2000
+    # 是否对所有操作都进行重试
+    OkToRetryOnAllOperations: true
+    # 切换实例的重试次数
+    MaxAutoRetriesNextServer: 1
+    # 对当前实例的重试次数
+    MaxAutoRetries: 1
+#设定Hystrix熔断超时时间 ，理论上熔断时间应该大于总连接超时时间
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 10000
+          strategy: SEMAPHORE

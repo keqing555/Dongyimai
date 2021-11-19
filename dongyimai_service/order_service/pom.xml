@@ -28,5 +28,11 @@
             <artifactId>sellergoods_service_api</artifactId>
             <version>1.0</version>
         </dependency>
+
+        <!--oauth依赖-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-oauth2</artifactId>
+        </dependency>
     </dependencies>
 </project>

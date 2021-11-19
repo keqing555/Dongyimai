@@ -45,6 +45,13 @@ spring:
           filters:
             - StripPrefix=1
 
+        - id: order-route
+          uri: lb://dym-order
+          predicates:
+            - Path=/api/cart/**, /api/cart/order/**,/api/orderItem/**
+          filters:
+            - StripPrefix=1
+
 
 eureka:
   client:
