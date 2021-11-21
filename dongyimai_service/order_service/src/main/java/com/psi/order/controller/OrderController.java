@@ -9,6 +9,7 @@ import com.psi.order.service.OrderService;
 import com.psi.utils.TokenDecode;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -119,7 +120,7 @@ public class OrderController {
      * @return
      */
     @ApiOperation(value = "Order添加", notes = "添加Order方法详情", tags = {"OrderController"})
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public Result add(@RequestBody @ApiParam(name = "Order对象", value = "传入JSON数据", required = true) Map map) {
         try {
             //在头文件里获取用户名
@@ -127,6 +128,8 @@ public class OrderController {
             System.out.println("头文件里的用户名：" + username);
             //设置购买用户
             map.put("userId", username);
+
+            Set keySet = map.keySet();
 
             //调用OrderService实现添加Order
             orderService.add(map);

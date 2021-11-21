@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 @EnableEurekaClient
 @MapperScan(basePackages = {"com.psi.order.dao"})
-@EnableFeignClients(basePackages = {"com.psi.sellergoods.feign"})
+@EnableFeignClients(basePackages = {"com.psi.sellergoods.feign", "com.psi.user.feign"})
 public class OrderApplication {
     public static void main(String[] args) {
         SpringApplication.run(OrderApplication.class, args);
@@ -40,10 +40,11 @@ public class OrderApplication {
 
     /**
      * 基于雪花算法的id生成器
+     *
      * @return
      */
     @Bean
-    public IdWorker idWorker(){
-        return new IdWorker(1,1);
+    public IdWorker idWorker() {
+        return new IdWorker(1, 1);
     }
 }

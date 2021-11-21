@@ -3,10 +3,7 @@ package com.psi.sellergoods.feign;
 import com.psi.entity.Result;
 import com.psi.sellergoods.pojo.Item;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -36,6 +33,6 @@ public interface ItemFeign {
      * @param username
      * @return
      */
-    @PostMapping
-    Result reduce(@PathVariable("username") String username);
+    @PostMapping("reduceCount")
+    Result reduceCount(@RequestParam("username") String username);
 }

@@ -29,10 +29,24 @@
             <version>1.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.psi</groupId>
+            <artifactId>user_service_api</artifactId>
+            <version>1.0</version>
+        </dependency>
+
         <!--oauth依赖-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-oauth2</artifactId>
         </dependency>
+
+        <!-- 使用Apache HttpClient替换Feign原生httpclient -->
+        <!-- feign-httpclient内含Apache HttpClient -->
+<!--        <dependency>-->
+<!--            <groupId>com.netflix.feign</groupId>-->
+<!--            <artifactId>feign-httpclient</artifactId>-->
+<!--            <version>8.15.1</version>-->
+<!--        </dependency>-->
     </dependencies>
 </project>

@@ -42,6 +42,8 @@ logging:
 feign:
   hystrix:
     enabled: true
+#  httpclient:
+#    enabled: true
 ribbon:
   #配置指定服务的负载均衡策略
   NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RoundRobinRule

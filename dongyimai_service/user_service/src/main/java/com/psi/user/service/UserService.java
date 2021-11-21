@@ -94,4 +94,12 @@ public interface UserService extends IService<User> {
     User findByUsername(String username);
 
 
+    /***
+     * 增加用户积分
+     * @param username
+     * @param points
+     * @return
+     */
+    int addUserPoints(String username, Integer points);
+
 }

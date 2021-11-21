@@ -2,6 +2,7 @@ package com.psi.order.service.impl;
 
 import com.baomidou.mybatisplus.extension.api.R;
 import com.psi.entity.PageResult;
+import com.psi.entity.Result;
 import com.psi.order.dao.OrderItemMapper;
 import com.psi.order.dao.OrderMapper;
 import com.psi.order.entity.Cart;
@@ -9,6 +10,7 @@ import com.psi.order.pojo.Order;
 import com.psi.order.pojo.OrderItem;
 import com.psi.order.service.OrderService;
 import com.psi.sellergoods.feign.ItemFeign;
+import com.psi.user.feign.UserFeign;
 import com.psi.utils.IdWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -20,10 +22,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /****
@@ -45,6 +44,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Autowired
     private ItemFeign itemFeign;
+
+    @Autowired
+    private UserFeign userFeign;
 
     /**
      * Order条件+分页查询
@@ -238,7 +240,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             cartList = (List<Cart>) redisTemplate.boundHashOps("cartList").get(map.get("userId"));
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("获取购物车失败：" + e);
+            throw new RuntimeException("获取购物车失败");
         }
 
         for (Cart cart : cartList) {
@@ -266,8 +268,20 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             this.save(order);
         }
 
-        //根据订单量减少库存（在删除购物车之前进行库存递减）
-        itemFeign.reduce((String) map.get("userId"));
+        //查看map信息
+        map.forEach((key, value) -> System.out.println(key + ":" + value));
+
+        try {
+            //根据订单量减少库存（在删除购物车之前进行库存递减）
+            itemFeign.reduceCount((String) map.get("userId"));
+
+            //每次下单增加10积分
+            userFeign.addUserPoints(10);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("远程服务调用失败");
+        }
 
         //删除Redis里的购物车
         redisTemplate.boundHashOps("cartList").delete(map.get("userId"));

@@ -162,8 +162,8 @@ public class ItemController {
      * @param username
      * @return
      */
-    @PostMapping("reduce")
-    public Result reduceCount(@PathVariable("username") String username) {
+    @PostMapping("reduceCount")
+    public Result reduceCount(@RequestParam("username") String username) {
         try {
             itemService.reduceCount(username);
             return new Result(true, StatusCode.OK, "库存递减成功");

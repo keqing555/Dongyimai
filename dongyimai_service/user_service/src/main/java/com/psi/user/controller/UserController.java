@@ -9,6 +9,7 @@ import com.psi.user.service.UserService;
 import com.psi.utils.BCrypt;
 import com.psi.utils.JwtUtil;
 import com.psi.utils.PhoneFormatCheckUtils;
+import com.psi.utils.TokenDecode;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,6 +36,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private TokenDecode tokenDecode;
 
     /***
      * User分页条件搜索实现
@@ -244,5 +248,16 @@ public class UserController {
     public Result<User> findByUsername(@PathVariable("username") String username) {
         User user = userService.findByUsername(username);
         return new Result<>(true, StatusCode.OK, "查询成功", user);
+    }
+
+    @GetMapping("add/points")
+    public Result addUserPoints(Integer points) {
+        //从令牌里获取用户名
+        String userName = tokenDecode.getUserInfo().get("user_name");
+        System.out.println("获取到的用户名：" + userName);
+
+        //添加几分
+        userService.addUserPoints(userName, points);
+        return new Result(true, StatusCode.OK, "添加积分成功");
     }
 }

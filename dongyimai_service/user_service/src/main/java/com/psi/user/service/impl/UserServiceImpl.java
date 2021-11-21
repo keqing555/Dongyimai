@@ -33,6 +33,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private RedisTemplate redisTemplate;
     @Autowired
     private RabbitTemplate rabbitTemplate;
+    @Autowired
+    private UserMapper userMapper;
 
     /**
      * User条件+分页查询
@@ -294,6 +296,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return list.get(0);
         }
         return null;
+    }
+
+    @Override
+    public int addUserPoints(String username, Integer points) {
+        return userMapper.addUserPoints(username, points);
     }
 
 
