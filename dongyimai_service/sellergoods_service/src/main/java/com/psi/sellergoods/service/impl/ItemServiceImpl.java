@@ -1,10 +1,13 @@
 package com.psi.sellergoods.service.impl;
 
+import com.psi.order.entity.Cart;
+import com.psi.order.pojo.OrderItem;
 import com.psi.sellergoods.dao.ItemMapper;
 import com.psi.sellergoods.pojo.Item;
 import com.psi.sellergoods.service.ItemService;
 import com.psi.entity.PageResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -21,7 +24,10 @@ import java.util.List;
  *****/
 @Service
 public class ItemServiceImpl extends ServiceImpl<ItemMapper, Item> implements ItemService {
-
+    @Autowired
+    private ItemMapper itemMapper;
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     /**
      * Item条件+分页查询
@@ -230,5 +236,29 @@ public class ItemServiceImpl extends ServiceImpl<ItemMapper, Item> implements It
         QueryWrapper<Item> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("status", status);
         return this.list(queryWrapper);
+    }
+
+    @Override
+    public void reduceCount(String username) {
+        List<Cart> cartList = null;
+        try {
+            //获取购物车
+            cartList = (List<Cart>) redisTemplate.boundHashOps("cartList").get(username);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //遍历购物车集合
+        for (Cart cart : cartList) {
+            //遍历单个购物车
+            for (OrderItem orderItem : cart.getOrderItemList()) {
+                //减少库存
+                int num = itemMapper.reduceCount(orderItem);
+
+                if (num <= 0) {
+                    throw new RuntimeException("库存不足");
+                }
+            }
+        }
     }
 }

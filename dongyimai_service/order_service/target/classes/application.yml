@@ -28,34 +28,33 @@ eureka:
     ip-address: 127.0.0.1
     instance-id: ${spring.application.name}:${server.port}
 
-feign:
-  hystrix:
-    enabled: true
 
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
   type-aliases-package: com.psi.order.dao
+
 #打印dubug级别日志
 logging:
   level:
     com.psi.order: debug
 
-DYM-ORDER: #服务名称
-  ribbon:
-    #配置指定服务的负载均衡策略
-    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RoundRobinRule
-    # Ribbon的连接超时时间
-    ConnectTimeout: 2000
-    # Ribbon的数据读取超时时间
-    ReadTimeout: 2000
-    # 是否对所有操作都进行重试
-    OkToRetryOnAllOperations: true
-    # 切换实例的重试次数
-    MaxAutoRetriesNextServer: 1
-    # 对当前实例的重试次数
-    MaxAutoRetries: 1
-#设定Hystrix熔断超时时间 ，理论上熔断时间应该大于总连接超时时间
+feign:
+  hystrix:
+    enabled: true
+ribbon:
+  #配置指定服务的负载均衡策略
+  NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RoundRobinRule
+  # Ribbon的连接超时时间
+  ConnectTimeout: 5000
+  # Ribbon的数据读取超时时间
+  ReadTimeout: 5000
+  # 是否对所有操作都进行重试
+  OkToRetryOnAllOperations: true
+  # 切换实例的重试次数
+  MaxAutoRetriesNextServer: 1
+  # 对当前实例的重试次数
+  MaxAutoRetries: 1
 hystrix:
   command:
     default:

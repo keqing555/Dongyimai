@@ -155,4 +155,21 @@ public class ItemController {
         List<Item> itemList = itemService.findByStatus(status);
         return new Result<>(true, StatusCode.OK, "查询成功", itemList);
     }
+
+
+    /***
+     * 根据订单减少库存
+     * @param username
+     * @return
+     */
+    @PostMapping("reduce")
+    public Result reduceCount(@PathVariable("username") String username) {
+        try {
+            itemService.reduceCount(username);
+            return new Result(true, StatusCode.OK, "库存递减成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, StatusCode.ERROR, "库存递减失败");
+        }
+    }
 }

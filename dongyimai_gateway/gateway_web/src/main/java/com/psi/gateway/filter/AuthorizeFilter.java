@@ -38,6 +38,7 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
         if (path.startsWith("/api/user/sendCode")
                 || path.startsWith("/api/user/add")
                 || path.startsWith("/api/user/login")
+//                || path.startsWith("/api/user/load/*")
                 || path.startsWith("/api/brand/search/")) {
             Mono<Void> mono = chain.filter(exchange);
             return mono;
@@ -70,8 +71,9 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
 
         /**
          * 解析jwt令牌信息
-         * 如果解析没有发生异常，令牌正确成功
+         * 如果解析没有发生异常，令牌正确,
          * 如果解析异常，请求携带的令牌错误
+         * 把正确的令牌放到请求头中，传递给下一个请求
          */
         try {
 /*            Claims claims = JwtUtil.parseJWT(token);

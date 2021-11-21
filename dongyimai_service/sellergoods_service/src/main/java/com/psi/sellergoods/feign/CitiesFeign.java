@@ -2,7 +2,6 @@ package com.psi.sellergoods.feign;
 import com.psi.entity.PageResult;
 import com.psi.entity.Result;
 import com.psi.sellergoods.pojo.Cities;
-import com.psi.sellergoods.pojo.Order;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;

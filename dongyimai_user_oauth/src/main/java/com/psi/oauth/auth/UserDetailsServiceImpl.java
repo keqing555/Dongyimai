@@ -26,8 +26,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        //获取user
-        Result<com.psi.user.pojo.User> user = userFeign.findByUsername(username);
+        Result<com.psi.user.pojo.User> user = null;
+
+        try {
+            //获取user
+            user = userFeign.findByUsername(username);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("调用远程服务失败");
+        }
 
         if (user == null) {
             return null;

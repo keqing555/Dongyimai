@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /****
  * @Author:ujiuye
@@ -114,19 +115,26 @@ public class OrderController {
 
     /***
      * 新增Order数据
-     * @param order
+     * @param map
      * @return
      */
     @ApiOperation(value = "Order添加", notes = "添加Order方法详情", tags = {"OrderController"})
     @PostMapping
     public Result add(@RequestBody @ApiParam(name = "Order对象", value = "传入JSON数据", required = true) Map map) {
-        //在头文件里获取用户名
-        String username = tokenDecode.getUserInfo().get("username");
-        map.put("userId",username);
+        try {
+            //在头文件里获取用户名
+            String username = tokenDecode.getUserInfo().get("user_name");
+            System.out.println("头文件里的用户名：" + username);
+            //设置购买用户
+            map.put("userId", username);
 
-        //调用OrderService实现添加Order
-        orderService.add(map);
-        return new Result(true, StatusCode.OK, "添加成功");
+            //调用OrderService实现添加Order
+            orderService.add(map);
+            return new Result(true, StatusCode.OK, "添加订单成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, StatusCode.ERROR, "添加订单失败");
+        }
     }
 
     /***

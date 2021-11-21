@@ -76,4 +76,11 @@ public interface ItemService extends IService<Item> {
      * @return
      */
     List<Item> findByStatus(String status);
+
+    /***
+     * 提交订单后减少库存
+     * 同时保证库存量大于等于订单量
+     * @param username
+     */
+    void reduceCount(String username);
 }

@@ -17,6 +17,12 @@
             <artifactId>sellergoods_service_api</artifactId>
             <version>1.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.psi</groupId>
+            <artifactId>order_service_api</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 
 </project>

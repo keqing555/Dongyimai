@@ -48,7 +48,7 @@ spring:
         - id: order-route
           uri: lb://dym-order
           predicates:
-            - Path=/api/cart/**, /api/cart/order/**,/api/orderItem/**
+            - Path=/api/order/**,/api/cart/**, /api/cart/order/**,/api/orderItem/**
           filters:
             - StripPrefix=1
 

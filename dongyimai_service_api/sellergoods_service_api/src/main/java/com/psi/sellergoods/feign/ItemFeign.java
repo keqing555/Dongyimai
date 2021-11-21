@@ -5,6 +5,7 @@ import com.psi.sellergoods.pojo.Item;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
@@ -23,9 +24,18 @@ public interface ItemFeign {
 
     /**
      * 根据id查询Item
+     *
      * @param id
      * @return
      */
     @GetMapping("/{id}")
     Result<Item> findById(@PathVariable("id") Long id);
+
+    /***
+     * 根据订单量减少库存
+     * @param username
+     * @return
+     */
+    @PostMapping
+    Result reduce(@PathVariable("username") String username);
 }

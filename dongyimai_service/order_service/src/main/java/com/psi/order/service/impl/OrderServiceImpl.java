@@ -1,11 +1,14 @@
 package com.psi.order.service.impl;
 
+import com.baomidou.mybatisplus.extension.api.R;
 import com.psi.entity.PageResult;
 import com.psi.order.dao.OrderItemMapper;
 import com.psi.order.dao.OrderMapper;
 import com.psi.order.entity.Cart;
 import com.psi.order.pojo.Order;
+import com.psi.order.pojo.OrderItem;
 import com.psi.order.service.OrderService;
+import com.psi.sellergoods.feign.ItemFeign;
 import com.psi.utils.IdWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -16,8 +19,12 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /****
  * @Author:ujiuye
@@ -35,6 +42,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Autowired
     private IdWorker idWorker;
+
+    @Autowired
+    private ItemFeign itemFeign;
 
     /**
      * Order条件+分页查询
@@ -222,20 +232,47 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
      */
     @Override
     public void add(Map map) {
-        //获取购物车数据
-        List<Cart> cartList = (List<Cart>) redisTemplate.boundHashOps("cartList").get(map.get("userId"));
-
-        for(Cart cart:cartList){
-            long orderId = idWorker.nextId();//创建订单id
-            //创建订单对象
-            Order order=new Order();
-            order.setOrderId(orderId);
-            order.setUserId(map.get("userId")+"");
-
+        List<Cart> cartList = null;
+        try {
+            //获取购物车数据
+            cartList = (List<Cart>) redisTemplate.boundHashOps("cartList").get(map.get("userId"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("获取购物车失败：" + e);
         }
 
+        for (Cart cart : cartList) {
+            long orderId = idWorker.nextId();//用雪花算法创建订单id
+            //创建订单对象
+            Order order = new Order();
+            order.setOrderId(orderId);//订单id
+            order.setUserId(map.get("userId") + "");
+            order.setStatus("1");//订单状态：未付款
+            order.setCreateTime(new Date());//订单创建时间
+            order.setUpdateTime(new Date());//订单跟新时间
+            order.setSellerId(cart.getSellerId());//商家id
 
+            double total = 0;//订单总金额
+            for (OrderItem orderItem : cart.getOrderItemList()) {
+                orderItem.setId(idWorker.nextId());
+                orderItem.setOrderId(orderId);//订单id
+                orderItem.setSellerId(cart.getSellerId());
+                total += orderItem.getTotalFee().doubleValue();
+                //保存购物车明细
+                orderItemMapper.insert(orderItem);
+            }
+            order.setPayment(new BigDecimal(total));
+            //保存订单到数据库
+            this.save(order);
+        }
+
+        //根据订单量减少库存（在删除购物车之前进行库存递减）
+        itemFeign.reduce((String) map.get("userId"));
+
+        //删除Redis里的购物车
+        redisTemplate.boundHashOps("cartList").delete(map.get("userId"));
     }
+
 
     /**
      * 根据ID查询Order
