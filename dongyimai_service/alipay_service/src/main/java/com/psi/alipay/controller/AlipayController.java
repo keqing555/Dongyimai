@@ -3,7 +3,10 @@ package com.psi.alipay.controller;
 import com.psi.alipay.service.AlipayService;
 import com.psi.entity.Result;
 import com.psi.entity.StatusCode;
+import com.psi.order.feign.OrderFeign;
+import com.psi.order.pojo.PayLog;
 import com.psi.utils.IdWorker;
+import com.psi.utils.TokenDecode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,16 +20,39 @@ public class AlipayController {
     @Autowired
     private AlipayService alipayService;
 
+    @Autowired
+    private OrderFeign orderFeign;
+
+    @Autowired
+    private TokenDecode tokenDecode;
+
     /***
      * 返回支付二维码，订单号，金额
      * @return
      */
     @GetMapping("createNative")
     public Map<String, String> createNative() {
-        IdWorker idWorker = new IdWorker();
-        String out_trade_no = idWorker.nextId() + "";
 
-        Map<String, String> map = alipayService.createNative(out_trade_no, 100);
+        //从头文件里获取用户名
+        String username = tokenDecode.getUserInfo().get("user_name");
+        System.out.println("头文件里的用户名:"+username);
+        //获取支付日志
+       PayLog payLog = orderFeign.getPayLogFromRedis(username).getData();
+
+        if(payLog==null){
+            Map<String,String> map=new HashMap<>();
+            map.put("msg","支付出错");
+            return map;
+        }
+
+//        IdWorker idWorker = new IdWorker();
+//        String out_trade_no = idWorker.nextId() + "";
+
+        //从支付日志里获取订单信息
+        String out_trade_no = payLog.getOutTradeNo();
+        Long totalFee = payLog.getTotalFee();
+
+        Map<String, String> map = alipayService.createNative(out_trade_no, totalFee);
 
         return map;
     }

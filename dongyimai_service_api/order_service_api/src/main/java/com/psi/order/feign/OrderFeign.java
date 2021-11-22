@@ -3,6 +3,7 @@ package com.psi.order.feign;
 import com.psi.entity.PageResult;
 import com.psi.entity.Result;
 import com.psi.order.pojo.Order;
+import com.psi.order.pojo.PayLog;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -83,4 +84,12 @@ public interface OrderFeign {
      */
     @GetMapping
     Result<List<Order>> findAll();
+
+    /***
+     * 从redis里查询支付日志
+     * @param username
+     * @return
+     */
+    @GetMapping("payLog/{username}")
+    public Result<PayLog> getPayLogFromRedis(@PathVariable("username") String username);
 }

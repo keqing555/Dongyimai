@@ -29,6 +29,12 @@
             <version>1.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.psi</groupId>
+            <artifactId>order_service_api</artifactId>
+            <version>1.0</version>
+        </dependency>
+
         <!-- 支付宝支付所需类库包 -->
         <dependency>
             <groupId>com.alipay.sdk</groupId>
@@ -40,6 +46,12 @@
                     <artifactId>bcprov-jdk15on</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <!--oauth依赖-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-oauth2</artifactId>
         </dependency>
     </dependencies>
 </project>

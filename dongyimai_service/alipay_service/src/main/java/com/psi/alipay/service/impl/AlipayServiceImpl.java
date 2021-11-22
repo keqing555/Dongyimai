@@ -34,7 +34,7 @@ public class AlipayServiceImpl implements AlipayService {
         bizContent.put("out_trade_no", out_trade_no);//订单号
         bizContent.put("total_amount", total_amount);//订单金额
         bizContent.put("subject", "测试商品");//支付商品名称
-        bizContent.put("qr_code_timeout_express", "1m");//支付链接有效时间，分钟
+        bizContent.put("qr_code_timeout_express", "10m");//支付链接有效时间，分钟
 
         request.setBizContent(request.toString());
 

@@ -3,6 +3,7 @@ package com.psi.order.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.psi.entity.PageResult;
 import com.psi.order.pojo.Order;
+import com.psi.order.pojo.PayLog;
 
 
 import java.util.List;
@@ -60,14 +61,22 @@ public interface OrderService extends IService<Order> {
 
     /**
      * 根据ID查询Order
+     *
      * @param id
      * @return
      */
-     Order findById(Long id);
+    Order findById(Long id);
 
     /***
      * 查询所有Order
      * @return
      */
     List<Order> findAll();
+
+    /***
+     * 根据用户名查询支付日志
+     * @param userId
+     * @return
+     */
+    PayLog getPayLogFromRedis(String userId);
 }

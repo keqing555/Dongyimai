@@ -5,9 +5,11 @@ import com.psi.entity.PageResult;
 import com.psi.entity.Result;
 import com.psi.order.dao.OrderItemMapper;
 import com.psi.order.dao.OrderMapper;
+import com.psi.order.dao.PayLogMapper;
 import com.psi.order.entity.Cart;
 import com.psi.order.pojo.Order;
 import com.psi.order.pojo.OrderItem;
+import com.psi.order.pojo.PayLog;
 import com.psi.order.service.OrderService;
 import com.psi.sellergoods.feign.ItemFeign;
 import com.psi.user.feign.UserFeign;
@@ -38,6 +40,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Autowired
     private OrderItemMapper orderItemMapper;
+
+    @Autowired
+    private PayLogMapper payLogMapper;
 
     @Autowired
     private IdWorker idWorker;
@@ -243,8 +248,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             throw new RuntimeException("获取购物车失败");
         }
 
+        double total = 0;//订单总金额
+        String orderList = "";//订单id的集合
+
         for (Cart cart : cartList) {
             long orderId = idWorker.nextId();//用雪花算法创建订单id
+            orderList += orderId + ",";
+
             //创建订单对象
             Order order = new Order();
             order.setOrderId(orderId);//订单id
@@ -254,7 +264,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             order.setUpdateTime(new Date());//订单跟新时间
             order.setSellerId(cart.getSellerId());//商家id
 
-            double total = 0;//订单总金额
             for (OrderItem orderItem : cart.getOrderItemList()) {
                 orderItem.setId(idWorker.nextId());
                 orderItem.setOrderId(orderId);//订单id
@@ -283,6 +292,25 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             throw new RuntimeException("远程服务调用失败");
         }
 
+        //支付单号
+        String out_trade_no = idWorker.nextId() + "";
+        //创建支付日志
+        PayLog payLog = new PayLog();
+        payLog.setOutTradeNo(out_trade_no);
+        payLog.setCreateTime(new Date());
+        payLog.setPayType("1");//支付类型：线上支付
+//        payLog.setPayTime();
+        payLog.setTotalFee((long) total);
+        payLog.setUserId((String) map.get("userId"));
+//        payLog.setTransactionId();
+        payLog.setTradeState("0");//未支付，支付完成后修改位1
+        payLog.setOrderList(orderList.substring(0, orderList.length() - 1));//订单号列表:123,122,去掉最后一个逗号
+
+        //保存支付日志到mysql
+        payLogMapper.insert(payLog);
+        //保存支付日志到Redis
+        redisTemplate.boundHashOps("payLog").put(map.get("userId"), payLog);
+
         //删除Redis里的购物车
         redisTemplate.boundHashOps("cartList").delete(map.get("userId"));
     }
@@ -307,5 +335,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Override
     public List<Order> findAll() {
         return this.list(new QueryWrapper<Order>());
+    }
+
+    @Override
+    public PayLog getPayLogFromRedis(String userId) {
+        return (PayLog) redisTemplate.boundHashOps("payLog").get(userId);
     }
 }

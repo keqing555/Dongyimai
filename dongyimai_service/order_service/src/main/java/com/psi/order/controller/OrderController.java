@@ -5,6 +5,7 @@ import com.psi.entity.PageResult;
 import com.psi.entity.Result;
 import com.psi.entity.StatusCode;
 import com.psi.order.pojo.Order;
+import com.psi.order.pojo.PayLog;
 import com.psi.order.service.OrderService;
 import com.psi.utils.TokenDecode;
 import io.swagger.annotations.*;
@@ -120,7 +121,7 @@ public class OrderController {
      * @return
      */
     @ApiOperation(value = "Order添加", notes = "添加Order方法详情", tags = {"OrderController"})
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping
     public Result add(@RequestBody @ApiParam(name = "Order对象", value = "传入JSON数据", required = true) Map map) {
         try {
             //在头文件里获取用户名
@@ -128,8 +129,6 @@ public class OrderController {
             System.out.println("头文件里的用户名：" + username);
             //设置购买用户
             map.put("userId", username);
-
-            Set keySet = map.keySet();
 
             //调用OrderService实现添加Order
             orderService.add(map);
@@ -164,5 +163,22 @@ public class OrderController {
         //调用OrderService实现查询所有Order
         List<Order> list = orderService.findAll();
         return new Result<List<Order>>(true, StatusCode.OK, "查询成功", list);
+    }
+
+
+    /***
+     * 从redis里查询用户的支付日志
+     * @param username
+     * @return
+     */
+    @GetMapping("payLog/{username}")
+    public Result<PayLog> getPayLogFromRedis(@PathVariable("username") String username) {
+        try {
+            PayLog payLog = orderService.getPayLogFromRedis(username);
+            return new Result<>(true, StatusCode.OK, "查询支付日志成功", payLog);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result<>(false, StatusCode.ERROR, "查询支付日志失败", null);
+        }
     }
 }

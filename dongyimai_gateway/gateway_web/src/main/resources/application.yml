@@ -52,6 +52,13 @@ spring:
           filters:
             - StripPrefix=1
 
+        - id: alipay-route
+          uri: lb://dym-pay
+          predicates:
+            - Path=/api/alipay/**
+          filters:
+            - StripPrefix=1
+
 
 eureka:
   client:
