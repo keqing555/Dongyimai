@@ -1,4 +1,4 @@
-package com.psi.sellergoods.service;
+package com.psi.alipay.service;
 import com.psi.sellergoods.pojo.PayLog;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.psi.entity.PageResult;

@@ -1,4 +1,4 @@
-package com.psi.sellergoods.pojo;
+package com.psi.alipay.pojo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import com.baomidou.mybatisplus.annotation.*;

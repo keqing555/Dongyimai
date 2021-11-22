@@ -21,6 +21,7 @@
         <module>sms_service</module>
         <module>user_service</module>
         <module>order_service</module>
+        <module>alipay_service</module>
     </modules>
 
     <dependencies>

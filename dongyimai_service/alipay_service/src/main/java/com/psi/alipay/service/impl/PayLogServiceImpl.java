@@ -1,9 +1,8 @@
-package com.psi.sellergoods.service.impl;
+package com.psi.alipay.service.impl;
 import com.psi.sellergoods.dao.PayLogMapper;
 import com.psi.sellergoods.pojo.PayLog;
 import com.psi.sellergoods.service.PayLogService;
 import com.psi.entity.PageResult;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;

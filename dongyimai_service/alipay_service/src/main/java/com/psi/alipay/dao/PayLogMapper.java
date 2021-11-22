@@ -1,4 +1,4 @@
-package com.psi.sellergoods.dao;
+package com.psi.alipay.dao;
 import com.psi.sellergoods.pojo.PayLog;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 

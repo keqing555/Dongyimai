@@ -1,4 +1,4 @@
-package com.psi.sellergoods.feign;
+package com.psi.alipay.feign;
 import com.psi.entity.PageResult;
 import com.psi.entity.Result;
 import com.psi.sellergoods.pojo.PayLog;

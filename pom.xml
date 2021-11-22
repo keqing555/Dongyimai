@@ -14,6 +14,7 @@
         <module>springboot_thymeleaf</module>
         <module>dongyimai_gateway</module>
         <module>dongyimai_user_oauth</module>
+        <module>pay_service_api</module>
     </modules>
 
     <parent>
