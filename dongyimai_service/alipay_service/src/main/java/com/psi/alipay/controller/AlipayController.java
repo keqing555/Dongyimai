@@ -5,9 +5,7 @@ import com.psi.entity.Result;
 import com.psi.entity.StatusCode;
 import com.psi.utils.IdWorker;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,7 +36,7 @@ public class AlipayController {
      * @param out_trade_no
      * @return
      */
-    @GetMapping("getPayStatus")
+    @PostMapping("getPayStatus")
     public Result getPayStatus(String out_trade_no) {
         Result result = new Result();
         int count = 0;//检测次数
@@ -48,11 +46,11 @@ public class AlipayController {
             String tradeStatus = (String) tradeMap.get("trade_status");
 
             if (tradeStatus != null && tradeStatus.equals("TRADE_SUCCESS")) {
-                return new Result(true, StatusCode.OK, "支付成功");
+                return new Result(true, StatusCode.OK, "支付成功", tradeMap);
             } else if (tradeStatus != null && tradeStatus.equals("TRADE_FINISHED")) {
-                return new Result(true, StatusCode.OK, "交易结束");
+                return new Result(true, StatusCode.OK, "交易结束", tradeMap);
             } else if (tradeStatus != null && tradeStatus.equals("TRADE_CLOSED")) {
-                return new Result(true, StatusCode.OK, "未付款交易超时");
+                return new Result(true, StatusCode.OK, "未付款交易超时", tradeMap);
             }
 
             //每隔一秒检测一次
@@ -70,5 +68,20 @@ public class AlipayController {
             }
         }
         return result;
+    }
+
+    /***
+     * 退款请求
+     * @param out_trade_no
+     * @param refund_amount
+     * @param trade_no
+     * @return
+     */
+    @PostMapping("refund")
+    public Map<String, String> refund(
+            @RequestParam("out_trade_no") String out_trade_no,
+            @RequestParam("refund_amount") double refund_amount,
+            @RequestParam("trade_no") String trade_no) {
+        return alipayService.refund(trade_no, refund_amount, out_trade_no);
     }
 }

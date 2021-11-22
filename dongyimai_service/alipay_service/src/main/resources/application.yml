@@ -4,6 +4,11 @@ server:
 spring:
   application:
     name: dym-pay
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.128.128:33306/dongyimaidb?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+    username: root
+    password: root
   redis:
     host: 192.168.128.128
     port: 6379

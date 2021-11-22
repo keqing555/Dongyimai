@@ -1,6 +1,7 @@
 package com.psi.alipay.dao;
-import com.psi.sellergoods.pojo.PayLog;
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.psi.alipay.pojo.PayLog;
 
 /****
  * @Author:ujiuye

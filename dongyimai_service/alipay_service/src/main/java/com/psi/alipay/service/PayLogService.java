@@ -1,6 +1,7 @@
 package com.psi.alipay.service;
-import com.psi.sellergoods.pojo.PayLog;
+
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.psi.alipay.pojo.PayLog;
 import com.psi.entity.PageResult;
 import java.util.List;
 /****

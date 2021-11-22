@@ -18,4 +18,13 @@ public interface AlipayService {
      * @return
      */
     Map<String, String> queryPayStatus(String out_trade_no);
+
+    /***
+     * 退款接口
+     * @param trade_no 支付宝交易流水号
+     * @param refund_amount 退款金额
+     * @param out_trade_no 支付单号
+     * @return
+     */
+    Map<String,String> refund(String trade_no,double refund_amount,String out_trade_no);
 }

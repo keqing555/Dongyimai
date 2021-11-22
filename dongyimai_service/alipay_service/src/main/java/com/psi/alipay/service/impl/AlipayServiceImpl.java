@@ -5,8 +5,10 @@ import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.request.AlipayTradePrecreateRequest;
 import com.alipay.api.request.AlipayTradeQueryRequest;
+import com.alipay.api.request.AlipayTradeRefundApplyRequest;
 import com.alipay.api.response.AlipayTradePrecreateResponse;
 import com.alipay.api.response.AlipayTradeQueryResponse;
+import com.alipay.api.response.AlipayTradeRefundApplyResponse;
 import com.psi.alipay.service.AlipayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -91,6 +93,31 @@ public class AlipayServiceImpl implements AlipayService {
             map.put("trade_status", response.getTradeStatus());//交易状态
             System.out.println("调用失败");
         }
+        return map;
+    }
+
+    @Override
+    public Map<String, String> refund(String trade_no, double refund_amount, String out_trade_no) {
+        Map<String, String> map = new HashMap<>();
+
+        AlipayTradeRefundApplyRequest request = new AlipayTradeRefundApplyRequest();
+
+        JSONObject bizContent = new JSONObject();
+        bizContent.put("trade_no", trade_no);
+        bizContent.put("refund_amount", refund_amount);
+        bizContent.put("out_request_no", out_trade_no);
+
+        request.setBizContent(bizContent.toString());
+
+        AlipayTradeRefundApplyResponse response = null;
+        try {
+            response = alipayClient.execute(request);
+            map.put("code", response.getCode());
+            map.put("msg", response.getMsg());
+        } catch (AlipayApiException e) {
+            e.printStackTrace();
+        }
+
         return map;
     }
 }

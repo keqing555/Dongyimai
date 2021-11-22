@@ -16,7 +16,7 @@ import java.lang.String;
 public class PayLog implements Serializable{
 
 	@ApiModelProperty(value = "支付订单号",required = false)
-    @TableId(type = IdType.AUTO)
+    @TableId(type = IdType.INPUT)
     @TableField(value = "out_trade_no")
 	private String outTradeNo;//支付订单号
 

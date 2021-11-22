@@ -1,9 +1,11 @@
 package com.psi.alipay.feign;
+
+import com.psi.alipay.pojo.PayLog;
 import com.psi.entity.PageResult;
 import com.psi.entity.Result;
-import com.psi.sellergoods.pojo.PayLog;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 /****
@@ -11,7 +13,7 @@ import java.util.List;
  * @Description:
  * @Date 2021/2/1 14:19
  *****/
-@FeignClient(value="sellergoods")
+@FeignClient(value = "sellergoods")
 @RequestMapping("/payLog")
 public interface PayLogFeign {
 
@@ -22,8 +24,8 @@ public interface PayLogFeign {
      * @param size
      * @return
      */
-    @PostMapping("/search/{page}/{size}" )
-    Result<PageResult<PayLog>> findPage(@RequestBody(required = false) PayLog payLog, @PathVariable  int page, @PathVariable  int size);
+    @PostMapping("/search/{page}/{size}")
+    Result<PageResult<PayLog>> findPage(@RequestBody(required = false) PayLog payLog, @PathVariable int page, @PathVariable int size);
 
     /***
      * PayLog分页搜索实现
@@ -31,15 +33,15 @@ public interface PayLogFeign {
      * @param size:每页显示多少条
      * @return
      */
-    @GetMapping("/search/{page}/{size}" )
-    Result<PageResult<PayLog>> findPage(@PathVariable  int page, @PathVariable  int size);
+    @GetMapping("/search/{page}/{size}")
+    Result<PageResult<PayLog>> findPage(@PathVariable int page, @PathVariable int size);
 
     /***
      * 多条件搜索品牌数据
      * @param payLog
      * @return
      */
-    @PostMapping("/search" )
+    @PostMapping("/search")
     Result<List<PayLog>> findList(@RequestBody(required = false) PayLog payLog);
 
     /***
@@ -47,7 +49,7 @@ public interface PayLogFeign {
      * @param id
      * @return
      */
-    @DeleteMapping("/{id}" )
+    @DeleteMapping("/{id}")
     Result delete(@PathVariable String id);
 
     /***
@@ -57,7 +59,7 @@ public interface PayLogFeign {
      * @return
      */
     @PutMapping("/{id}")
-    Result update(@RequestBody PayLog payLog,@PathVariable String id);
+    Result update(@RequestBody PayLog payLog, @PathVariable String id);
 
     /***
      * 新增PayLog数据

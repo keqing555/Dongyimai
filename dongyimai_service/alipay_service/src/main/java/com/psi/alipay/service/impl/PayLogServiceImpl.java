@@ -1,7 +1,8 @@
 package com.psi.alipay.service.impl;
-import com.psi.sellergoods.dao.PayLogMapper;
-import com.psi.sellergoods.pojo.PayLog;
-import com.psi.sellergoods.service.PayLogService;
+
+import com.psi.alipay.dao.PayLogMapper;
+import com.psi.alipay.pojo.PayLog;
+import com.psi.alipay.service.PayLogService;
 import com.psi.entity.PageResult;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -16,7 +17,7 @@ import java.util.List;
  * @Date 2021/2/1 14:19
  *****/
 @Service
-public class PayLogServiceImpl extends ServiceImpl<PayLogMapper,PayLog> implements PayLogService {
+public class PayLogServiceImpl extends ServiceImpl<PayLogMapper, PayLog> implements PayLogService {
 
 
     /**
