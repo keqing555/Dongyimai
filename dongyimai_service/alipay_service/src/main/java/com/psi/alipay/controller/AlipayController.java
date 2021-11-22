@@ -8,6 +8,7 @@ import com.psi.order.pojo.PayLog;
 import com.psi.utils.IdWorker;
 import com.psi.utils.TokenDecode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -22,6 +23,8 @@ public class AlipayController {
 
     @Autowired
     private OrderFeign orderFeign;
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     @Autowired
     private TokenDecode tokenDecode;
@@ -35,13 +38,21 @@ public class AlipayController {
 
         //从头文件里获取用户名
         String username = tokenDecode.getUserInfo().get("user_name");
-        System.out.println("头文件里的用户名:"+username);
-        //获取支付日志
-       PayLog payLog = orderFeign.getPayLogFromRedis(username).getData();
+        System.out.println("头文件里的用户名:" + username);
 
-        if(payLog==null){
-            Map<String,String> map=new HashMap<>();
-            map.put("msg","支付出错");
+//        PayLog payLog = null;
+//        try {
+//            //获取支付日志，也可从redis里直接获取
+//            payLog = orderFeign.getPayLogFromRedis(username).getData();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
+        PayLog payLog = (PayLog) redisTemplate.boundHashOps("payLog").get(username);
+
+        if (payLog == null) {
+            Map<String, String> map = new HashMap<>();
+            map.put("msg", "支付出错");
             return map;
         }
 

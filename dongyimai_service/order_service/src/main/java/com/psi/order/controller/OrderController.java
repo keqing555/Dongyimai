@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.server.PathParam;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -171,8 +172,8 @@ public class OrderController {
      * @param username
      * @return
      */
-    @GetMapping("payLog/{username}")
-    public Result<PayLog> getPayLogFromRedis(@PathVariable("username") String username) {
+    @GetMapping("payLog")
+    public Result<PayLog> getPayLogFromRedis(@PathParam(value = "username") String username) {
         try {
             PayLog payLog = orderService.getPayLogFromRedis(username);
             return new Result<>(true, StatusCode.OK, "查询支付日志成功", payLog);
