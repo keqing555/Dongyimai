@@ -1,0 +1,45 @@
+server:
+  port: 9011
+
+spring:
+  application:
+    name: dym-seckill
+  jackson:
+    time-zone: GMT+8
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.128.128:33306/dongyimaidb?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: root
+  rabbitmq:
+    host: 192.168.128.128
+    username: root
+    password: root
+  main:
+    allow-bean-definition-overriding: true
+  redis:
+    host: 192.168.128.128
+    port: 6379
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka
+  instance:
+    prefer-ip-address: true
+
+feign:
+  hystrix:
+    enabled: true
+
+#hystrix 配置
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: true
+        isolation:
+          thread:
+            timeoutInMilliseconds: 10000
+          strategy: SEMAPHORE

@@ -20,6 +20,7 @@
         <module>user_service_api</module>
         <module>order_service_api</module>
         <module>alipay_service_api</module>
+        <module>seckill_service_api</module>
     </modules>
 
     <dependencies>
