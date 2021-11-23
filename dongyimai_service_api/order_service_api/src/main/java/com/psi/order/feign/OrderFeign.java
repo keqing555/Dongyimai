@@ -15,7 +15,7 @@ import java.util.List;
  * @Description:
  * @Date 2021/2/1 14:19
  *****/
-@FeignClient(value = "sellergoods")
+@FeignClient(value = "dym-order")
 @RequestMapping("/order")
 public interface OrderFeign {
 
@@ -91,6 +91,18 @@ public interface OrderFeign {
      * @param username
      * @return
      */
-    @GetMapping("payLog")
-    public Result<PayLog> getPayLogFromRedis(@PathParam("username") String username);
+    @GetMapping("payLog/{username}")
+    Result<PayLog> getPayLogFromRedis(@PathVariable(name = "username") String username);
+
+    /***
+     * 支付完成后，修改订单状态
+     * @param out_trade_no
+     * @param transactionId
+     * @return
+     */
+    @PostMapping("updateOrderStatus")
+    public Result updateOrderStatus(
+            @RequestParam(name = "out_trade_no") String out_trade_no,
+            @RequestParam(value = "transactionId") String transactionId);
+
 }

@@ -2,7 +2,6 @@ package com.psi.alipay;
 
 import com.psi.alipay.config.FeignInterceptor;
 import com.psi.utils.TokenDecode;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -14,9 +13,9 @@ import org.springframework.context.annotation.Bean;
 @EnableEurekaClient
 @EnableFeignClients(basePackages = {"com.psi.order.feign"})
 //@MapperScan(basePackages = {"com.psi.alipay.dao"})
-public class AlipayAPP {
+public class AlipayApplication {
     public static void main(String[] args) {
-        SpringApplication.run(AlipayAPP.class, args);
+        SpringApplication.run(AlipayApplication.class, args);
         System.out.println("AliPay服务启动");
     }
 

@@ -35,12 +35,12 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("login")
-    public Result login(String username, String password, HttpServletResponse response) {
+    public Result<AuthToken> login(String username, String password, HttpServletResponse response) {
         if (StringUtils.isEmpty(username)) {
-            return new Result(false, StatusCode.ERROR, "用户名不能为空");
+            return new Result<>(false, StatusCode.ERROR, "用户名不能为空",null);
         }
         if (StringUtils.isEmpty(password)) {
-            return new Result(false, StatusCode.ERROR, "密码不能为空");
+            return new Result<>(false, StatusCode.ERROR, "密码不能为空",null);
         }
         //申请令牌
         AuthToken authToken = authService.login(username, password, clientId, clientSecret);
@@ -66,6 +66,6 @@ public class AuthController {
 
         response.addCookie(cookie);
 
-        return new Result(true, StatusCode.OK, "登录成功");
+        return new Result<>(true, StatusCode.OK, "登录成功", authToken);
     }
 }

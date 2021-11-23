@@ -33,6 +33,12 @@ public class FeignInterceptor implements RequestInterceptor {
                     while (headerNames.hasMoreElements()) {
                         String name = headerNames.nextElement();//头文件名
                         String value = request.getHeader(name);//对应的头文件值
+
+                        //跳过content-length，防止too many bytes written
+//                        if(name.equalsIgnoreCase("content-length")){
+//                            continue;
+//                        }
+
                         //把令牌数据添加到请求头中
                         requestTemplate.header(name, value);
                     }

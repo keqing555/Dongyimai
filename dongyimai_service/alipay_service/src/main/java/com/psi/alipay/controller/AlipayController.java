@@ -40,19 +40,20 @@ public class AlipayController {
         String username = tokenDecode.getUserInfo().get("user_name");
         System.out.println("头文件里的用户名:" + username);
 
-//        PayLog payLog = null;
-//        try {
-//            //获取支付日志，也可从redis里直接获取
-//            payLog = orderFeign.getPayLogFromRedis(username).getData();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
 
-        PayLog payLog = (PayLog) redisTemplate.boundHashOps("payLog").get(username);
+        PayLog payLog = null;
+        try {
+            //从订单服务里远程获取支付日志
+//            payLog = orderFeign.getPayLogFromRedis(username).getData();
+            //从redis里获取支付日志
+            payLog = (PayLog) redisTemplate.boundHashOps("payLog").get(username);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         if (payLog == null) {
             Map<String, String> map = new HashMap<>();
-            map.put("msg", "支付出错");
+            map.put("msg", "预支付出错");
             return map;
         }
 
@@ -73,7 +74,7 @@ public class AlipayController {
      * @param out_trade_no
      * @return
      */
-    @PostMapping("getPayStatus")
+    @GetMapping("getPayStatus")
     public Result getPayStatus(String out_trade_no) {
         Result result = new Result();
         int count = 0;//检测次数
@@ -83,6 +84,9 @@ public class AlipayController {
             String tradeStatus = (String) tradeMap.get("trade_status");
 
             if (tradeStatus != null && tradeStatus.equals("TRADE_SUCCESS")) {
+                //支付成功修改订单
+                orderFeign.updateOrderStatus(out_trade_no, tradeMap.get("trade_no"));
+                System.out.println("支付成功，订单状态一修改：" + tradeMap.get("trade_no"));
                 return new Result(true, StatusCode.OK, "支付成功", tradeMap);
             } else if (tradeStatus != null && tradeStatus.equals("TRADE_FINISHED")) {
                 return new Result(true, StatusCode.OK, "交易结束", tradeMap);
@@ -99,8 +103,8 @@ public class AlipayController {
 
             count++;
             //超过设定时间
-            if (count >= 60) {
-                result = new Result(false, StatusCode.ERROR, "超过一分钟未支付，已超时");
+            if (count >= 600) {
+                result = new Result(false, StatusCode.ERROR, "超过10分钟未支付，已超时");
                 break;
             }
         }

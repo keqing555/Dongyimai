@@ -79,4 +79,12 @@ public interface OrderService extends IService<Order> {
      * @return
      */
     PayLog getPayLogFromRedis(String userId);
+
+
+    /***
+     * 支付成功后修改订单状态
+     * @param out_trade_no
+     * @param transactionId
+     */
+    void updateOrderStatus(String out_trade_no,String transactionId);
 }

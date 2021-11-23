@@ -45,6 +45,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     private PayLogMapper payLogMapper;
 
     @Autowired
+    private OrderMapper orderMapper;
+
+    @Autowired
     private IdWorker idWorker;
 
     @Autowired
@@ -340,5 +343,30 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Override
     public PayLog getPayLogFromRedis(String userId) {
         return (PayLog) redisTemplate.boundHashOps("payLog").get(userId);
+    }
+
+    @Override
+    public void updateOrderStatus(String out_trade_no, String transactionId) {
+        //修改支付日志
+        PayLog payLog = payLogMapper.selectById(out_trade_no);
+        payLog.setPayTime(new Date());//添加付款日期
+        payLog.setTradeState("1");//已支付
+        payLog.setTransactionId(transactionId);//交易号
+        payLogMapper.updateById(payLog);
+
+        //修改订单状态
+        String orderList = payLog.getOrderList();//订单号列表
+        String[] orderIds = orderList.split(",");//订单id数组
+
+        for (String orderId : orderIds) {
+            Order order = orderMapper.selectById(orderId);
+            if(order!=null){
+                order.setStatus("2");//已付款
+                order.setPaymentTime(new Date());//付款时间
+                orderMapper.updateById(order);
+            }
+        }
+        //清除redis里的支付日志
+        redisTemplate.boundHashOps("payLog").delete(payLog.getUserId());
     }
 }

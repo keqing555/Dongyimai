@@ -172,8 +172,8 @@ public class OrderController {
      * @param username
      * @return
      */
-    @GetMapping("payLog")
-    public Result<PayLog> getPayLogFromRedis(@PathParam(value = "username") String username) {
+    @GetMapping("payLog/{username}")
+    public Result<PayLog> getPayLogFromRedis(@PathVariable(name = "username") String username) {
         try {
             PayLog payLog = orderService.getPayLogFromRedis(username);
             return new Result<>(true, StatusCode.OK, "查询支付日志成功", payLog);
@@ -181,5 +181,25 @@ public class OrderController {
             e.printStackTrace();
             return new Result<>(false, StatusCode.ERROR, "查询支付日志失败", null);
         }
+    }
+
+    /***
+     * 支付完成后，修改订单状态
+     * @param out_trade_no
+     * @param transactionId
+     * @return
+     */
+    @PostMapping("updateOrderStatus")
+    public Result updateOrderStatus(
+            @RequestParam(name = "out_trade_no") String out_trade_no,
+            @RequestParam(value = "transactionId") String transactionId) {
+        try {
+            orderService.updateOrderStatus(out_trade_no, transactionId);
+            return new Result(true, StatusCode.OK, "订单状态已修改");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(false, StatusCode.ERROR, "订单状态修改失败");
+        }
+
     }
 }
