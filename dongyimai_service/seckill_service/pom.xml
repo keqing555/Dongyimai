@@ -23,6 +23,18 @@
             <version>1.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.psi</groupId>
+            <artifactId>order_service_api</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.psi</groupId>
+            <artifactId>alipay_service_api</artifactId>
+            <version>1.0</version>
+        </dependency>
+
         <!--oauth依赖-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>

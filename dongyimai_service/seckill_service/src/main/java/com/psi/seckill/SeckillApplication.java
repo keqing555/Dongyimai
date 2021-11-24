@@ -13,7 +13,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableEurekaClient
-//@EnableFeignClients(basePackages = {"com.psi.seckill.feign"})
+@EnableFeignClients(basePackages = {"com.psi.alipay.feign"})
 @MapperScan(basePackages = {"com.psi.seckill.dao"})
 @EnableScheduling   //开启定时任务
 @EnableAsync    //开启spring的异步功能

@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 @EnableEurekaClient
-@EnableFeignClients(basePackages = {"com.psi.order.feign"})
+@EnableFeignClients(basePackages = {"com.psi.order.feign", "com.psi.seckill.feign"})
 public class AlipayApplication {
     public static void main(String[] args) {
         SpringApplication.run(AlipayApplication.class, args);

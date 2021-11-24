@@ -59,6 +59,13 @@ spring:
           filters:
             - StripPrefix=1
 
+        - id: seckill-route
+          uri: lb://dym-seckill
+          predicates:
+            - Path=/api/seckillOrder/**,/api/seckillGoods/**
+          filters:
+            - StripPrefix=1
+
 
 eureka:
   client:

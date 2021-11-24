@@ -35,6 +35,12 @@
             <version>1.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.psi</groupId>
+            <artifactId>seckill_service_api</artifactId>
+            <version>1.0</version>
+        </dependency>
+
         <!-- 支付宝支付所需类库包 -->
         <dependency>
             <groupId>com.alipay.sdk</groupId>

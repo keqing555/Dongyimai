@@ -1,5 +1,6 @@
 package com.psi.seckill.controller;
 
+import com.psi.alipay.feign.AlipayFeign;
 import com.psi.entity.PageResult;
 import com.psi.entity.Result;
 import com.psi.entity.StatusCode;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /****
  * @Author:ujiuye
@@ -29,6 +31,9 @@ public class SeckillOrderController {
 
     @Autowired
     private TokenDecode tokenDecode;
+
+    @Autowired
+    private AlipayFeign alipayFeign;
 
     /***
      * SeckillOrder分页条件搜索实现
@@ -164,7 +169,17 @@ public class SeckillOrderController {
         //添加订单
         String message = seckillOrderService.addSeckillOrder(id, time, username);
 
-        return new Result(true, StatusCode.OK, message);
+        //调用支付服务，创建秒杀二维码
+        Map<String, String> map = alipayFeign.createNative();
+
+        return new Result(true, StatusCode.OK, message, map);
+    }
+
+
+    @PostMapping("afterPaySeckill")
+    public Result afterPaySeckill(@RequestBody Map seckillMap, @RequestParam("trade_no") String trade_no) {
+        Map<String, String> map = alipayFeign.createNative();
+        return new Result(true, StatusCode.OK, "创建秒杀支付二维码", map);
     }
 
     /***

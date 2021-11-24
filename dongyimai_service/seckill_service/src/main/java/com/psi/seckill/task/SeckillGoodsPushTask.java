@@ -1,4 +1,4 @@
-package com.psi.seckill.timer;
+package com.psi.seckill.task;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.psi.seckill.dao.SeckillGoodsMapper;

@@ -51,11 +51,13 @@ public class AlipayServiceImpl implements AlipayService {
             map.put("qr_code", response.getQrCode());
             map.put("out_trade_no", out_trade_no);
             map.put("total_amount", String.valueOf(total_amount));
+            map.put("alert","预支付接口调用成功");
             System.out.println("预支付接口调用成功");
         } else {
             map.put("qr_code", "");
             map.put("out_trade_no", "");
             map.put("total_amount", "0");
+            map.put("alert","预支付接口调用失败");
             System.out.println("预支付接口调用失败");
         }
         map.put("code", response.getCode());//code为10000表示调用成功

@@ -5,6 +5,7 @@ import com.psi.entity.Result;
 import com.psi.entity.StatusCode;
 import com.psi.order.feign.OrderFeign;
 import com.psi.order.pojo.PayLog;
+import com.psi.seckill.feign.SeckillOrderFeign;
 import com.psi.utils.IdWorker;
 import com.psi.utils.TokenDecode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,9 @@ public class AlipayController {
 
     @Autowired
     private OrderFeign orderFeign;
+
+    @Autowired
+    private SeckillOrderFeign seckillOrderFeign;
 
     @Autowired
     private RedisTemplate redisTemplate;
@@ -62,7 +66,7 @@ public class AlipayController {
 
         //从支付日志里获取订单信息
         String out_trade_no = payLog.getOutTradeNo();
-        Long totalFee = payLog.getTotalFee();
+        double totalFee = (double) payLog.getTotalFee() / 100;//先转为浮点型再转为分，避免失真
 
         Map<String, String> map = alipayService.createNative(out_trade_no, totalFee);
 

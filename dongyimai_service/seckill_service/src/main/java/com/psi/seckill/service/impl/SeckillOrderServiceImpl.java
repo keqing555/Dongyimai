@@ -7,7 +7,7 @@ import com.psi.seckill.dao.SeckillOrderMapper;
 import com.psi.seckill.pojo.SeckillGoods;
 import com.psi.seckill.pojo.SeckillOrder;
 import com.psi.seckill.service.SeckillOrderService;
-import com.psi.seckill.timer.MultiThreadCreateOrder;
+import com.psi.seckill.task.MultiThreadCreateOrder;
 import com.psi.utils.IdWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;

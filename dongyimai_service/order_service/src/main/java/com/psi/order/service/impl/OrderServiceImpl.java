@@ -303,7 +303,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         payLog.setCreateTime(new Date());
         payLog.setPayType("1");//支付类型：线上支付
 //        payLog.setPayTime();
-        payLog.setTotalFee((long) total);
+        payLog.setTotalFee((long) (total * 100));
         payLog.setUserId((String) map.get("userId"));
 //        payLog.setTransactionId();
         payLog.setTradeState("0");//未支付，支付完成后修改位1
@@ -360,7 +360,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         for (String orderId : orderIds) {
             Order order = orderMapper.selectById(orderId);
-            if(order!=null){
+            if (order != null) {
                 order.setStatus("2");//已付款
                 order.setPaymentTime(new Date());//付款时间
                 orderMapper.updateById(order);
