@@ -29,7 +29,7 @@ public class MultiThreadCreateOrder {
      * 如果下单阻塞了，说明属于异步操作
      * 如果没有阻塞，说明没有执行异步操作
      */
-    @Async  //异步方法
+    @Async  //异步方法，没有返回值
     public void createOrder() {
 //        try {
 //            System.out.println("准备执行异步下单...");
@@ -51,8 +51,11 @@ public class MultiThreadCreateOrder {
                 //获取商品数据
                 SeckillGoods seckillGoods = (SeckillGoods) redisTemplate.boundHashOps("SeckillGoods_" + time).get(id);
 
-                if (seckillGoods == null || seckillGoods.getStockCount() <= 0) {
-                    throw new RuntimeException("该商品已经售馨");//没有库存
+                if (seckillGoods == null) {
+                    throw new RuntimeException("该秒杀商品已过时");//秒杀时间段已过
+                }
+                if (seckillGoods.getStockCount() <= 0) {
+                    throw new RuntimeException("该秒杀商品已经售馨");//没有库存
                 }
 
                 //有库存,创建秒杀订单
@@ -85,11 +88,12 @@ public class MultiThreadCreateOrder {
                 seckillStatus.setStatus(2);//秒杀等待支付
                 seckillStatus.setOrderId(seckillOrder.getId());
                 seckillStatus.setMoney(seckillOrder.getMoney().floatValue());
+
                 redisTemplate.boundHashOps("UserQueueStatus").put(username, seckillStatus);
             }
         } catch (RuntimeException e) {
             e.printStackTrace();
         }
-
     }
+
 }

@@ -78,7 +78,7 @@ public interface SeckillOrderService extends IService<SeckillOrder> {
      * @param username
      * @return
      */
-    Boolean addSeckillOrder(long id, String time, String username);
+    String addSeckillOrder(long id, String time, String username);
 
     /***
      * 查询抢单状态

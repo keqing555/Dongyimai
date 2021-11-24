@@ -200,13 +200,22 @@ public class SeckillOrderServiceImpl extends ServiceImpl<SeckillOrderMapper, Sec
     }
 
     @Override
-    public Boolean addSeckillOrder(long id, String time, String username) {
+    public String addSeckillOrder(long id, String time, String username) {
+        //获取商品数据
+        SeckillGoods seckillGoods = (SeckillGoods) redisTemplate.boundHashOps("SeckillGoods_" + time).get(id);
+
+        if (seckillGoods == null) {
+            return "该商品未在秒杀时间段";//秒杀时间段已过
+        }
+        if (seckillGoods.getStockCount() <= 0) {
+            return "该秒杀商品已经售馨";//没有库存
+        }
 
         //秒杀状态  1:排队中，2:秒杀等待支付,3:支付超时，4:秒杀失败,5:支付完成
         SeckillStatus seckillStatus = new SeckillStatus(username, new Date(), 1, id, time);
 
         //将秒杀抢单信息存入redis里，左压存入
-        // 采用List方式储存，List本事就是一个队列
+        // 采用List方式储存，List本身就是一个队列
         redisTemplate.boundListOps("SeckillOrderQueue").leftPush(seckillStatus);
 
         //将抢单状态存入redis里
@@ -214,7 +223,7 @@ public class SeckillOrderServiceImpl extends ServiceImpl<SeckillOrderMapper, Sec
 
         //多线程下单
         multiThreadCreateOrder.createOrder();
-        return true;
+        return "秒杀成功";
     }
 
     @Override

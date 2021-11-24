@@ -13,7 +13,7 @@ import java.util.List;
  * @Description:
  * @Date 2021/2/1 14:19
  *****/
-@FeignClient(value = "sellergoods")
+@FeignClient(value = "dym-order")
 @RequestMapping("/payLog")
 public interface PayLogFeign {
 

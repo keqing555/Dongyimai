@@ -151,29 +151,20 @@ public class SeckillOrderController {
     }
 
     /***
-     * 添加秒杀订单
+     * 添加秒杀订单到redis
      * @param time
      * @param id
      * @return
      */
     @GetMapping("addSeckillOrder")
     public Result addSeckillOrder(String time, long id) {
+        //从令牌里获取用户名
+        String username = tokenDecode.getUserInfo().get("user_name");
+//       String username = "keqing";
+        //添加订单
+        String message = seckillOrderService.addSeckillOrder(id, time, username);
 
-        try {
-            //从令牌里获取用户名
-//            String username = tokenDecode.getUserInfo().get("user_name");
-            String username = "keqing";
-            //添加订单
-            Boolean isSuccess = seckillOrderService.addSeckillOrder(id, time, username);
-
-            if (isSuccess) {
-                return new Result(true, StatusCode.OK, "抢单成功");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new Result(false, StatusCode.ERROR, e.getMessage());
-        }
-        return new Result(false, StatusCode.ERROR, "系统繁忙！");
+        return new Result(true, StatusCode.OK, message);
     }
 
     /***
@@ -183,8 +174,8 @@ public class SeckillOrderController {
     @GetMapping("queryStatus")
     public Result<SeckillStatus> queryStatus() {
         try {
-//            String username = tokenDecode.getUserInfo().get("user_name");
-            String username = "keqing";
+            String username = tokenDecode.getUserInfo().get("user_name");
+//            String username = "keqing";
             SeckillStatus seckillStatus = seckillOrderService.queryStatus(username);
 
             return new Result<>(true, StatusCode.OK, "抢购状态", seckillStatus);

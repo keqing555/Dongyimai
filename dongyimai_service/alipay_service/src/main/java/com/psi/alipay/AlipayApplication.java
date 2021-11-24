@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 @EnableEurekaClient
 @EnableFeignClients(basePackages = {"com.psi.order.feign"})
-//@MapperScan(basePackages = {"com.psi.alipay.dao"})
 public class AlipayApplication {
     public static void main(String[] args) {
         SpringApplication.run(AlipayApplication.class, args);

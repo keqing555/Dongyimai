@@ -23,6 +23,7 @@ public class AlipayController {
 
     @Autowired
     private OrderFeign orderFeign;
+
     @Autowired
     private RedisTemplate redisTemplate;
 
@@ -40,13 +41,12 @@ public class AlipayController {
         String username = tokenDecode.getUserInfo().get("user_name");
         System.out.println("头文件里的用户名:" + username);
 
-
         PayLog payLog = null;
         try {
             //从订单服务里远程获取支付日志
-//            payLog = orderFeign.getPayLogFromRedis(username).getData();
+            payLog = orderFeign.getPayLogFromRedis(username).getData();
             //从redis里获取支付日志
-            payLog = (PayLog) redisTemplate.boundHashOps("payLog").get(username);
+//            payLog = (PayLog) redisTemplate.boundHashOps("payLog").get(username);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -86,7 +86,7 @@ public class AlipayController {
             if (tradeStatus != null && tradeStatus.equals("TRADE_SUCCESS")) {
                 //支付成功修改订单
                 orderFeign.updateOrderStatus(out_trade_no, tradeMap.get("trade_no"));
-                System.out.println("支付成功，订单状态一修改：" + tradeMap.get("trade_no"));
+                System.out.println("支付成功，订单状态已修改，流水号：" + tradeMap.get("trade_no"));
                 return new Result(true, StatusCode.OK, "支付成功", tradeMap);
             } else if (tradeStatus != null && tradeStatus.equals("TRADE_FINISHED")) {
                 return new Result(true, StatusCode.OK, "交易结束", tradeMap);

@@ -11,7 +11,7 @@ import java.util.List;
  * @Description:
  * @Date 2021/2/1 14:19
  *****/
-@FeignClient(value="dym-sellergoods")
+@FeignClient(value="dym-seckill")
 @RequestMapping("/seckillGoods")
 public interface SeckillGoodsFeign {
 

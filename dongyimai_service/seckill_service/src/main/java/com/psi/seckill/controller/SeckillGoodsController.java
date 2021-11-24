@@ -5,9 +5,7 @@ import com.psi.entity.Result;
 import com.psi.entity.StatusCode;
 import com.psi.seckill.pojo.SeckillGoods;
 import com.psi.seckill.service.SeckillGoodsService;
-import com.psi.seckill.service.SeckillOrderService;
 import com.psi.utils.DateUtil;
-import com.psi.utils.TokenDecode;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +26,6 @@ public class SeckillGoodsController {
 
     @Autowired
     private SeckillGoodsService seckillGoodsService;
-
 
     /***
      * SeckillGoods分页条件搜索实现
@@ -160,7 +157,7 @@ public class SeckillGoodsController {
     }
 
     /***
-     * 根据时间段获取对应秒杀商品
+     * 根据时间段从redis里获取对应秒杀商品
      * @param time：2021112402
      * @return
      */
@@ -170,7 +167,7 @@ public class SeckillGoodsController {
     }
 
     /***
-     * 根据id查询秒杀商品详情
+     * 根据id查询redis里秒杀商品详情
      * @param time
      * @param id
      * @return
