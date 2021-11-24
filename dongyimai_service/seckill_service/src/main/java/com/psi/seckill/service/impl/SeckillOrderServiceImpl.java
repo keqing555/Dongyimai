@@ -1,11 +1,13 @@
 package com.psi.seckill.service.impl;
 
 import com.psi.entity.PageResult;
+import com.psi.seckill.bean.SeckillStatus;
 import com.psi.seckill.dao.SeckillGoodsMapper;
 import com.psi.seckill.dao.SeckillOrderMapper;
 import com.psi.seckill.pojo.SeckillGoods;
 import com.psi.seckill.pojo.SeckillOrder;
 import com.psi.seckill.service.SeckillOrderService;
+import com.psi.seckill.timer.MultiThreadCreateOrder;
 import com.psi.utils.IdWorker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -35,6 +37,9 @@ public class SeckillOrderServiceImpl extends ServiceImpl<SeckillOrderMapper, Sec
 
     @Autowired
     private SeckillGoodsMapper seckillGoodsMapper;
+
+    @Autowired
+    private MultiThreadCreateOrder multiThreadCreateOrder;
 
     /**
      * SeckillOrder条件+分页查询
@@ -196,38 +201,24 @@ public class SeckillOrderServiceImpl extends ServiceImpl<SeckillOrderMapper, Sec
 
     @Override
     public Boolean addSeckillOrder(long id, String time, String username) {
-        //获取商品数据
-        SeckillGoods seckillGoods = (SeckillGoods) redisTemplate.boundHashOps("SeckillGoods_" + time).get(id);
 
-        if (seckillGoods == null || seckillGoods.getStockCount() <= 0) {
-            throw new RuntimeException("该商品已经售馨");//没有库存
-        }
+        //秒杀状态  1:排队中，2:秒杀等待支付,3:支付超时，4:秒杀失败,5:支付完成
+        SeckillStatus seckillStatus = new SeckillStatus(username, new Date(), 1, id, time);
 
-        //有库存,创建秒杀订单
-        SeckillOrder seckillOrder = new SeckillOrder();
-        seckillOrder.setId(idWorker.nextId());
-        seckillOrder.setSeckillId(id);
-        seckillOrder.setMoney(seckillGoods.getCostPrice());
-        seckillOrder.setUserId(username);
-        seckillOrder.setCreateTime(new Date());
-        seckillOrder.setStatus("0");//未支付状态
+        //将秒杀抢单信息存入redis里，左压存入
+        // 采用List方式储存，List本事就是一个队列
+        redisTemplate.boundListOps("SeckillOrderQueue").leftPush(seckillStatus);
 
-        //将秒杀订单存入redis
-        redisTemplate.boundHashOps("SeckillOrder").put(username, seckillOrder);
+        //将抢单状态存入redis里
+        redisTemplate.boundHashOps("UserQueueStatus").put(username, seckillStatus);
 
-        //库存减一
-        seckillGoods.setStockCount(seckillGoods.getStockCount() - 1);
-
-        //判断还有没有库存
-        if (seckillGoods.getStockCount() <= 0) {
-            //没有库存，把商品数据同步到MySQL
-            seckillGoodsMapper.updateById(seckillGoods);
-            //清空redis中该商品信息
-            redisTemplate.boundHashOps("SeckillGoods_" + time).delete(id);
-        } else {
-            //还有库存，更新reids商品库存
-            redisTemplate.boundHashOps("SeckillGoods_" + time).put(id, seckillGoods);
-        }
+        //多线程下单
+        multiThreadCreateOrder.createOrder();
         return true;
+    }
+
+    @Override
+    public SeckillStatus queryStatus(String username) {
+        return (SeckillStatus) redisTemplate.boundHashOps("UserQueueStatus").get(username);
     }
 }

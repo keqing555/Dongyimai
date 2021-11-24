@@ -170,7 +170,7 @@ public class SeckillGoodsController {
     }
 
     /***
-     * 根据id查询商品详情
+     * 根据id查询秒杀商品详情
      * @param time
      * @param id
      * @return

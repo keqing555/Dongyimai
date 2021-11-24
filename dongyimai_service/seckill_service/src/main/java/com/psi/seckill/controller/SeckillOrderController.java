@@ -3,6 +3,7 @@ package com.psi.seckill.controller;
 import com.psi.entity.PageResult;
 import com.psi.entity.Result;
 import com.psi.entity.StatusCode;
+import com.psi.seckill.bean.SeckillStatus;
 import com.psi.seckill.pojo.SeckillOrder;
 import com.psi.seckill.service.SeckillOrderService;
 import com.psi.utils.TokenDecode;
@@ -160,7 +161,8 @@ public class SeckillOrderController {
 
         try {
             //从令牌里获取用户名
-            String username = tokenDecode.getUserInfo().get("user_name");
+//            String username = tokenDecode.getUserInfo().get("user_name");
+            String username = "keqing";
             //添加订单
             Boolean isSuccess = seckillOrderService.addSeckillOrder(id, time, username);
 
@@ -172,5 +174,24 @@ public class SeckillOrderController {
             return new Result(false, StatusCode.ERROR, e.getMessage());
         }
         return new Result(false, StatusCode.ERROR, "系统繁忙！");
+    }
+
+    /***
+     * 查询抢购状态
+     * @return
+     */
+    @GetMapping("queryStatus")
+    public Result<SeckillStatus> queryStatus() {
+        try {
+//            String username = tokenDecode.getUserInfo().get("user_name");
+            String username = "keqing";
+            SeckillStatus seckillStatus = seckillOrderService.queryStatus(username);
+
+            return new Result<>(true, StatusCode.OK, "抢购状态", seckillStatus);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result<>(false, StatusCode.ERROR, "查询抢购状态失败");
+        }
+
     }
 }

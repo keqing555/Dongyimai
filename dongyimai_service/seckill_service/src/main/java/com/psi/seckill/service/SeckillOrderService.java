@@ -2,9 +2,11 @@ package com.psi.seckill.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.psi.entity.PageResult;
+import com.psi.seckill.bean.SeckillStatus;
 import com.psi.seckill.pojo.SeckillOrder;
 
 import java.util.List;
+
 /****
  * @Author:ujiuye
  * @Description:SeckillOrder业务层接口
@@ -57,10 +59,11 @@ public interface SeckillOrderService extends IService<SeckillOrder> {
 
     /**
      * 根据ID查询SeckillOrder
+     *
      * @param id
      * @return
      */
-     SeckillOrder findById(Long id);
+    SeckillOrder findById(Long id);
 
     /***
      * 查询所有SeckillOrder
@@ -76,4 +79,11 @@ public interface SeckillOrderService extends IService<SeckillOrder> {
      * @return
      */
     Boolean addSeckillOrder(long id, String time, String username);
+
+    /***
+     * 查询抢单状态
+     * @param username
+     * @return
+     */
+    SeckillStatus queryStatus(String username);
 }
