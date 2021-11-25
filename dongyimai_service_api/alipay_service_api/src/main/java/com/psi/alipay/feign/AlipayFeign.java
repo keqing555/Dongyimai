@@ -22,7 +22,7 @@ public interface AlipayFeign {
     Map<String, String> createNative();
 
     @GetMapping("getPayStatus")
-    Result getPayStatus(String out_trade_no);
+    Result getPayStatus(@RequestParam("out_trade_no") String out_trade_no);
 
     @PostMapping("refund")
     Map<String, String> refund(

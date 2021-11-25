@@ -36,18 +36,10 @@ public class MultiThreadCreateOrder {
      */
     @Async  //异步方法，没有返回值
     public void createOrder() {
-//        try {
-//            System.out.println("准备执行异步下单...");
-//            Thread.sleep(10000);
-//            System.out.println("开始执行异步下单...");
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
 
         //从redis队列中获取排队信息，右取方式
         //秒杀状态  1:排队中，2:秒杀等待支付,3:支付超时，4:秒杀失败,5:支付完成
         SeckillStatus seckillStatus = (SeckillStatus) redisTemplate.boundListOps("SeckillOrderQueue").rightPop();
-
 
         if (seckillStatus != null) {
             String time = seckillStatus.getTime();
@@ -93,6 +85,9 @@ public class MultiThreadCreateOrder {
                 }
             }
 
+            /**
+             * 开始秒杀
+             */
             try {
                 //获取该商品的锁
                 redisTemplate.boundValueOps(goodsId).set("lock");
@@ -101,7 +96,8 @@ public class MultiThreadCreateOrder {
                  * 有库存,创建秒杀订单
                  */
                 SeckillOrder seckillOrder = new SeckillOrder();
-                seckillOrder.setId(idWorker.nextId());
+                long orderId = idWorker.nextId();//生成订单id
+                seckillOrder.setId(orderId);
                 seckillOrder.setSeckillId(id);
                 seckillOrder.setMoney(seckillGoods.getCostPrice());
                 seckillOrder.setUserId(username);
@@ -115,7 +111,7 @@ public class MultiThreadCreateOrder {
                  * 创建支付日志，用于保存支付信息
                  */
                 PayLog payLog = new PayLog();
-                payLog.setOutTradeNo(idWorker.nextId() + "");//订单号
+                payLog.setOutTradeNo(orderId + "");//订单号
                 payLog.setCreateTime(new Date());
                 payLog.setTotalFee((long) (seckillOrder.getMoney().doubleValue() * 100));//先乘以100再转为long，
                 payLog.setUserId(username);
@@ -136,7 +132,7 @@ public class MultiThreadCreateOrder {
                 redisTemplate.boundHashOps("UserQueueStatus").put(username, seckillStatus);
 
                 /**
-                 * 监听当前订单的支付状态（线程等待）
+                 * 异步监听当前订单的支付状态，当前线程继续向下执行
                  */
                 monitotrStatusTsak.monitorPayStatus(username, seckillOrder);
 
@@ -161,9 +157,6 @@ public class MultiThreadCreateOrder {
                 //释放锁
                 redisTemplate.delete(goodsId);
             }
-
         }
-
     }
-
 }

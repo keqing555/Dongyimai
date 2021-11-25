@@ -13,7 +13,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableEurekaClient
-@EnableFeignClients(basePackages = {"com.psi.alipay.feign"})
+@EnableFeignClients(basePackages = {"com.psi.alipay.feign", "com.psi.order.feign"})
 @MapperScan(basePackages = {"com.psi.seckill.dao"})
 @EnableScheduling   //开启定时任务
 @EnableAsync    //开启spring的异步功能
@@ -29,7 +29,7 @@ public class SeckillApplication {
     }
 
     @Bean
-    public TokenDecode tokenDecode(){
+    public TokenDecode tokenDecode() {
         return new TokenDecode();
     }
 }

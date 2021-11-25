@@ -221,8 +221,13 @@ public class SeckillOrderServiceImpl extends ServiceImpl<SeckillOrderMapper, Sec
         //将抢单状态存入redis里
         redisTemplate.boundHashOps("UserQueueStatus").put(username, seckillStatus);
 
-        //多线程下单
-        multiThreadCreateOrder.createOrder();
+        try {
+            //多线程下单
+            multiThreadCreateOrder.createOrder();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
         return "秒杀成功";
     }
 

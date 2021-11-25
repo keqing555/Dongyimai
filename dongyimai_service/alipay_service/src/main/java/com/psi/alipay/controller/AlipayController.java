@@ -61,9 +61,6 @@ public class AlipayController {
             return map;
         }
 
-//        IdWorker idWorker = new IdWorker();
-//        String out_trade_no = idWorker.nextId() + "";
-
         //从支付日志里获取订单信息
         String out_trade_no = payLog.getOutTradeNo();
         double totalFee = (double) payLog.getTotalFee() / 100;//先转为浮点型再转为分，避免失真
@@ -79,7 +76,7 @@ public class AlipayController {
      * @return
      */
     @GetMapping("getPayStatus")
-    public Result getPayStatus(String out_trade_no) {
+    public Result getPayStatus(@RequestParam("out_trade_no") String out_trade_no) {
         Result result = new Result();
         int count = 0;//检测次数
 

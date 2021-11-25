@@ -10,6 +10,7 @@ import com.psi.seckill.service.SeckillOrderService;
 import com.psi.utils.TokenDecode;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,7 +34,13 @@ public class SeckillOrderController {
     private TokenDecode tokenDecode;
 
     @Autowired
+    private RedisTemplate redisTemplate;
+
+    @Autowired
     private AlipayFeign alipayFeign;
+
+    //订单号
+    private static String out_trade_no = "";
 
     /***
      * SeckillOrder分页条件搜索实现
@@ -165,12 +172,17 @@ public class SeckillOrderController {
     public Result addSeckillOrder(String time, long id) {
         //从令牌里获取用户名
         String username = tokenDecode.getUserInfo().get("user_name");
-//       String username = "keqing";
+
         //添加订单
         String message = seckillOrderService.addSeckillOrder(id, time, username);
 
         //调用支付服务，创建秒杀二维码
         Map<String, String> map = alipayFeign.createNative();
+
+        //获取订单号
+        out_trade_no = map.get("out_trade_no");
+
+        System.out.println("生成的抢购订单号：" + out_trade_no);
 
         return new Result(true, StatusCode.OK, message, map);
     }
@@ -187,16 +199,43 @@ public class SeckillOrderController {
      * @return
      */
     @GetMapping("queryStatus")
-    public Result<SeckillStatus> queryStatus() {
+    public Result queryStatus() {
+        if ("".equals(out_trade_no)) {
+            return new Result(false, StatusCode.ERROR, "没有抢购订单");
+        }
         try {
             String username = tokenDecode.getUserInfo().get("user_name");
-//            String username = "keqing";
+
             SeckillStatus seckillStatus = seckillOrderService.queryStatus(username);
 
-            return new Result<>(true, StatusCode.OK, "抢购状态", seckillStatus);
+            System.out.println("要查询抢购订单号：" + out_trade_no);
+
+            int count = 0;
+            while (true) {
+                try {
+                    //返回抢购支付状态
+                    Thread.sleep(1000);
+                    Result payStatus = alipayFeign.getPayStatus(out_trade_no);
+                    payStatus.setData(seckillStatus);
+                    if (payStatus.isFlag()) {
+                        //交易完成，订单，支付日志保存到MySQL，删除redis订单
+
+                    }
+                    System.out.println("抢购支付成功");
+                    return payStatus;
+                } catch (Exception e) {
+                    System.out.println("未获取到支付状态");
+                }
+                //超过两分钟
+                count++;
+                if (count > 120) {
+                    break;
+                }
+            }
+            return new Result(false, StatusCode.ERROR, "查询抢单状态失败", seckillStatus);
         } catch (Exception e) {
             e.printStackTrace();
-            return new Result<>(false, StatusCode.ERROR, "查询抢购状态失败");
+            return new Result(false, StatusCode.ERROR, "查询抢购状态失败");
         }
 
     }
